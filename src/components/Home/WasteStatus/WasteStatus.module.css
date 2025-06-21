@@ -1,0 +1,110 @@
+.wasteStatusContainer {
+    position: relative;
+    width: 90%;
+    height: 500px;
+    background-image: url('https://provietnam.com.vn/wp-content/uploads/2023/07/shutterstock_1086143246-jpg.webp');
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.overlay {
+    background: rgba(60, 172, 66, 0.85);
+    width: 45%;
+    height: 50%;
+    padding: 30px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    position: absolute;
+    /* You can adjust these values as needed */
+    top: 50px;     /* Distance from top */
+    right: 50px;   /* Distance from right */
+    /* Or use left: 50px; instead of right */
+    /* Or use bottom: 50px; instead of top */
+    animation: fadeIn 0.5s ease-in-out;
+    border-radius: 8px;
+}
+
+.overlay h2 {
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.2;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Adds depth */
+}
+
+.overlay p {
+    font-size: 15px;
+    line-height: 1.6;
+    font-family: 'Arial', sans-serif;
+    opacity: 0.95;
+    max-width: 90%;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.learnMoreButton {
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: 2px solid white;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    width: fit-content;
+    animation: slideIn 0.5s ease-in-out 0.2s backwards;
+}
+
+.learnMoreButton:hover {
+    background: white;
+    color: #2e7d32;
+    transform: translateX(5px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .overlay {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .overlay h2 {
+        font-size: 22px;
+    }
+
+    .overlay p {
+        font-size: 14px;
+    }
+}

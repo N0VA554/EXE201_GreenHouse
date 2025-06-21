@@ -1,0 +1,40 @@
+.guidelinesContainer {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.coloredSection {
+    background: linear-gradient(to right, #00695c, #2e7d32, #9dffa4);
+    padding: 30px;
+    border-radius: 12px;
+    color: white;
+}
+
+.sectionTitle {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+    text-transform: uppercase;
+}
+
+.steps {
+    list-style-type: none;
+    padding: 0;
+}
+
+.steps li {
+    font-size: 16px;
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 30px;
+    line-height: 1.5;
+}
+
+.checkmark {
+    position: absolute;
+    left: 0;
+    font-size: 18px;
+    color: white;
+}

@@ -1,0 +1,84 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 20;
+    transition: background-color 0.8s ease;
+}
+.scrolled {
+    background: #2e793d;
+}
+.navbarLogo {
+    display: flex;
+    align-items: center;
+}
+
+.navbarLogo img {
+    padding-left: 200px;
+    width: 100%;
+    height: 60px;
+}
+
+.navbarMenu {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+    padding-right: 300px;
+    padding-top: 20px;
+}
+
+.navbarMenu li {
+    display: inline;
+}
+
+.navbarMenu a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color .3s ease-in;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.navbarMenu a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.navbarMenu a:hover::after {
+    transform: scaleX(1);
+}
+
+.active::after {
+    transform: scaleX(1) !important;
+    height: 3px !important;
+}
+
+.navbarLanguage select {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.navbarLanguage select option {
+    background: black;
+    color: white;
+}

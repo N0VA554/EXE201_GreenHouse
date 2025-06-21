@@ -1,0 +1,73 @@
+.videoSectionContainer {
+    max-width: 80%;
+    margin: 40px auto;
+    padding: 30px;
+    background: #f9fafb;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.videoSectionContainer h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2e7d32;
+    font-family: 'Arial', sans-serif;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.videoWrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.videoIframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.videoSectionContainer p {
+    font-size: 16px;
+    color: #666;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .videoSectionContainer {
+        padding: 20px;
+    }
+
+    .videoSectionContainer h2 {
+        font-size: 22px;
+    }
+
+    .videoSectionContainer p {
+        font-size: 14px;
+    }
+}

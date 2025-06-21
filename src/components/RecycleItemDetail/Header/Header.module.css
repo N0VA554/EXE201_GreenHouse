@@ -1,0 +1,24 @@
+.headerContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    background: #e0f7fa;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #00695c;
+    margin-bottom: 15px;
+    font-family: 'Arial', sans-serif;
+    text-transform: uppercase;
+}
+
+.description {
+    font-size: 16px;
+    color: #424242;
+    line-height: 1.6;
+    font-family: 'Arial', sans-serif;
+}

@@ -1,0 +1,38 @@
+.recyclingProcessContainer {
+    display: flex;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.textSection {
+    flex: 1;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2e7d32;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.illustrationSection {
+    flex: 1;
+    display: flex;
+    
+    justify-content: center;
+}
+
+.processImage {
+    max-width: 90%;
+    height: 70%;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .recyclingProcessContainer {
+        flex-direction: column;
+    }
+}

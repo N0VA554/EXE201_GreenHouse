@@ -1,0 +1,18 @@
+.avatarOverlay {
+    position: absolute;
+    left: 50%;
+    bottom: -10px; /* Đè lên phần dưới của minicarousel */
+    transform: translateX(-50%);
+    z-index: 10;
+    /* Có thể thêm box-shadow nếu muốn nổi bật hơn */
+}
+
+.avatarImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 20%;
+    background-color: white;
+    border: 4px solid #2e7d32;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

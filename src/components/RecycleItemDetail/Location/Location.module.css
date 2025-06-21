@@ -1,0 +1,61 @@
+.locationContainer {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.mapSection {
+    flex: 1;
+}
+
+.mapImage {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.detailsSection {
+    flex: 1;
+}
+
+.detailsTitle {
+    font-size: 20px;
+    color: #2e7d32;
+    margin-bottom: 15px;
+    font-family: 'Arial', sans-serif;
+}
+
+.detailsSection p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+    font-family: 'Arial', sans-serif;
+}
+
+.mapLink {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #2e7d32;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.mapLink:hover {
+    background: #1b5e20;
+}
+
+@media (max-width: 768px) {
+    .locationContainer {
+        flex-direction: column;
+        text-align: center;
+    }
+}

@@ -1,0 +1,190 @@
+/* Media.module.css */
+.mediaContainer {
+    
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    
+    margin-top: 60px;
+}
+
+.header h2 {
+    font-size: 34px;
+    font-weight: bold;
+    color: #2e793d;
+}
+
+.tabs {
+    display: flex;
+    gap: 20px;
+}
+
+.tabs span {
+    font-size: 16px;
+    color: #666;
+    cursor: pointer;
+}
+
+.tabs .active {
+    color: #44b15b;
+    font-weight: bold;
+}
+
+.mediaList {
+    position: relative;
+    overflow: hidden; /* Prevent overflow issues */
+}
+
+.mediaItem {
+    padding: 10px; /* Increased padding for gap */
+    width: 450px; /* Fixed width */
+    
+    box-sizing: border-box; /* Ensure padding doesn't affect total width */
+    transition: transform 0.3s ease;
+    display: inline-block; /* Ensure consistent layout */
+}
+
+.mediaItem.active {
+    transform: scale(1.2); /* Slightly enlarge the active item */
+    z-index: 1;
+    padding-right: 50px;
+    padding-left: 50px;
+   
+    
+    margin-bottom: 40px; /* Adjust margin to center the active item */
+    transition: transform 0.3s ease;
+}
+
+.mediaImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+   
+}
+
+.mediaContent .category {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.mediaContent h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis for long titles */
+}
+
+.mediaContent p {
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.mediaItem.active .mediaContent p {
+    display: block;
+}
+
+.mediaContent .date {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.navButton {
+    background-color: #44b15b;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+
+}
+
+.navButton:hover {
+    background-color: #358e49;
+    
+}
+
+.viewAll {
+    text-align: right;
+    margin-bottom: 30px;
+}
+
+.viewAll a {
+    color: #44b15b;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: -90px;
+}
+
+.viewAll a:hover {
+    text-decoration: underline;
+}
+
+.mediaItem:hover .mediaContent {
+    background-color: white;
+    color: #44b15b;
+    border: 1px solid #44b15b;
+}
+
+.mediaItem:hover .mediaContent .category,
+.mediaItem:hover .mediaContent .date {
+    color: #44b15b;
+}
+
+.mediaContent {
+    background-color: #44b15b;
+    color: white;
+    padding: 15px;
+    height: 150px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+@media (max-width: 1024px) {
+    .mediaItem {
+        width: 300px; /* Slightly reduced width for smaller screens */
+        margin-right: 15px;
+    }
+    .mediaItem.active {
+        transform: scale(1.05);
+    }
+}
+
+@media (max-width: 600px) {
+    .mediaItem {
+        width: 250px; /* Further reduced for mobile */
+        margin-right: 10px;
+    }
+    .mediaItem.active {
+        transform: scale(1.02);
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .tabs {
+        gap: 10px;
+    }
+}
