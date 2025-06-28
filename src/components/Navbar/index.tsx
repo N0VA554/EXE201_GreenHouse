@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import logo from '../../assets/logotrang.png';
 
 const Navbar: React.FC = () => {
     const location = useLocation();
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        setIsLoggedIn(!!token);
+    }, []);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const isScrolled = window.scrollY > 50;
+            setScrolled(isScrolled);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const getActiveSection = () => {
         const path = location.pathname;
@@ -17,15 +34,13 @@ const Navbar: React.FC = () => {
         return '';
     };
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const isScrolled = window.scrollY > 50;
-            setScrolled(isScrolled);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        setIsLoggedIn(false);
+        navigate('/dang-nhap');
+    };
 
     const activeSection = getActiveSection();
 
@@ -39,13 +54,18 @@ const Navbar: React.FC = () => {
                 <li><Link to="/danhsachphanloai" className={activeSection === 'phanloai' ? styles.active : ''}>PHÂN LOẠI</Link></li>
                 <li><a href="#tongquan" className={activeSection === 'tongquan' ? styles.active : ''}>TỔNG QUAN</a></li>
                 <li><a href="#truyenthong" className={activeSection === 'truyenthong' ? styles.active : ''}>TRUYỀN THÔNG</a></li>
+
                 <li>
-                    <Link 
-                        to="/dang-nhap" 
-                        className={`${styles.loginButton} ${activeSection === 'dangnhap' ? styles.active : ''}`}
-                    >
-                        ĐĂNG NHẬP
-                    </Link>
+                    {isLoggedIn ? (
+                        <button onClick={handleLogout} className={`${styles.loginButton} ${activeSection === 'dangnhap' ? styles.active : ''}`}>ĐĂNG XUẤT</button>
+                    ) : (
+                        <Link
+                            to="/dang-nhap"
+                            className={`${styles.loginButton} ${activeSection === 'dangnhap' ? styles.active : ''}`}
+                        >
+                            ĐĂNG NHẬP
+                        </Link>
+                    )}
                 </li>
             </ul>
         </nav>
