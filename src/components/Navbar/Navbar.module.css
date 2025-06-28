@@ -11,9 +11,11 @@
     z-index: 20;
     transition: background-color 0.8s ease;
 }
+
 .scrolled {
     background: #2e793d;
 }
+
 .navbarLogo {
     display: flex;
     align-items: center;
@@ -81,4 +83,21 @@
 .navbarLanguage select option {
     background: black;
     color: white;
+}
+
+.loginButton {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin-right: 20px;
+}
+
+.loginButton:hover {
+    background: white;
+    color: #2e793d;
 }

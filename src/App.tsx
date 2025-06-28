@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import RecycleGuideList from './pages/RecycleGuideList';
 import Home from './pages/Home';
@@ -8,19 +8,36 @@ import Footer from './components/Footer';
 import RecycleItem from './pages/RecycleItem';
 import ScrollToTop from './components/ScrollToTop';
 import BlogDetail from './pages/BlogDetail';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
-const App: React.FC = () => {
+
+const AppContent: React.FC = () => {
+  const location = useLocation();
+  const hideLayout = location.pathname === '/dang-nhap' || location.pathname === '/dang-ky'; // hoặc thêm || location.pathname === '/dang-ky'
+  
   return (
-    <Router>
+    <>
       <ScrollToTop />
-      <Navbar />
+      {!hideLayout && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/dang-nhap" element={<Login />} />
+        <Route path="/dang-ky" element={<Register />} />
+        
         <Route path="/danhsachphanloai" element={<RecycleGuideList />} />
         <Route path="/danhsachphanloai/:id" element={<RecycleItem />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
       </Routes>
-      <Footer/>
+      {!hideLayout && <Footer />}
+    </>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 };

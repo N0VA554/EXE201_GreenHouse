@@ -11,6 +11,7 @@ const Navbar: React.FC = () => {
         const path = location.pathname;
         if (path === '/') return 'trangchu';
         if (path === '/danhsachphanloai') return 'phanloai';
+        if (path === '/dang-nhap') return 'dangnhap';
         if (path.includes('#tongquan')) return 'tongquan';
         if (path.includes('#truyenthong')) return 'truyenthong';
         return '';
@@ -38,6 +39,14 @@ const Navbar: React.FC = () => {
                 <li><Link to="/danhsachphanloai" className={activeSection === 'phanloai' ? styles.active : ''}>PHÂN LOẠI</Link></li>
                 <li><a href="#tongquan" className={activeSection === 'tongquan' ? styles.active : ''}>TỔNG QUAN</a></li>
                 <li><a href="#truyenthong" className={activeSection === 'truyenthong' ? styles.active : ''}>TRUYỀN THÔNG</a></li>
+                <li>
+                    <Link 
+                        to="/dang-nhap" 
+                        className={`${styles.loginButton} ${activeSection === 'dangnhap' ? styles.active : ''}`}
+                    >
+                        ĐĂNG NHẬP
+                    </Link>
+                </li>
             </ul>
         </nav>
     );

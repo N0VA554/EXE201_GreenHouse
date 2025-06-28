@@ -15,7 +15,8 @@ const BlogDetail: React.FC = () => {
     const [data, setData] = useState<BlogDetailData | null>(null);
 
     useEffect(() => {
-        fetch(`https://localhost:7161/blogs/${id}`)
+        const apiUrl = process.env.REACT_APP_API_URL;
+        fetch(`${apiUrl}/blogs/${id}`)
             .then(res => res.json())
             .then(res => setData(res.data));
     }, [id]);
@@ -24,7 +25,7 @@ const BlogDetail: React.FC = () => {
 
     return (
         <div style={{ background: '#f4faf6', padding: '0 0 40px 0' }}>
-            <MiniCarousel/>
+            <MiniCarousel />
             <div style={{ maxWidth: 900, margin: '0 auto', background: '#fff', padding: 32 }}>
                 <div style={{ textAlign: 'center', padding: '40px 0 24px 0', background: '#eaf7ee' }}>
                     <h1 style={{ color: '#2e7d32', fontWeight: 700, fontSize: 36, margin: 0 }}>{data.title}</h1>

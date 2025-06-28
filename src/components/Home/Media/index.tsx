@@ -28,7 +28,7 @@ const Media: React.FC = () => {
 
     // Fetch categories on mount
     useEffect(() => {
-        fetch('https://localhost:7161/blogtypes')
+        fetch(`${process.env.REACT_APP_API_URL}/blogtypes`)
             .then(res => res.json())
             .then(data => {
                 setCategories(data.data);
@@ -41,7 +41,7 @@ const Media: React.FC = () => {
     // Fetch blogs when selectedCategory changes
     useEffect(() => {
         if (!selectedCategory) return;
-        fetch(`https://localhost:7161/blogs/getbyblogtypeid/${selectedCategory}`)
+        fetch(`${process.env.REACT_APP_API_URL}/blogs/getbyblogtypeid/${selectedCategory}`)
             .then(res => res.json())
             .then(data => {
                 let items = [];
@@ -69,7 +69,7 @@ const Media: React.FC = () => {
         autoplaySpeed: 5000,
         infinite: mediaItems.length > 3,
         speed: 500,
-        slidesToShow: Math.min(3, mediaItems.length || 1), 
+        slidesToShow: Math.min(3, mediaItems.length || 1),
         slidesToScroll: 1,
         beforeChange: (_: number, next: number) => setCurrentIndex(next),
         responsive: [
@@ -127,34 +127,34 @@ const Media: React.FC = () => {
                 </div>
             </div>
             <div className={styles.mediaList}>
-            <Slider ref={sliderRef} {...settings}>
-                {mediaItems.map((item) => (
-                    <div
-                        key={item.id}
-                        className={styles.mediaItem}
-                        onClick={() => navigate(`/blog/${item.id}`)}
-                        style={{ cursor: 'pointer' }}
-                    >
-                        <div className={styles.mediaImageWrap}>
-                            <img src={item.image} alt={item.title} className={styles.mediaImage} />
-                        </div>
-                        <div className={styles.mediaContent}>
-                            <span className={styles.category}>
-                                {categories.find(c => c.id === selectedCategory)?.name || ''}
-                            </span>
-                            <h3 className={styles.mediaItemTitle}>{item.title}</h3>
-                            <div className={styles.mediaDesc}>
-                                {getShortDescription(item.description)}
+                <Slider ref={sliderRef} {...settings}>
+                    {mediaItems.map((item) => (
+                        <div
+                            key={item.id}
+                            className={styles.mediaItem}
+                            onClick={() => navigate(`/blog/${item.id}`)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <div className={styles.mediaImageWrap}>
+                                <img src={item.image} alt={item.title} className={styles.mediaImage} />
                             </div>
-                            <div className={styles.mediaFooter}>
-                                <span className={styles.date}>{item.date}</span>
-                                <span className={styles.arrow}>→</span>
+                            <div className={styles.mediaContent}>
+                                <span className={styles.category}>
+                                    {categories.find(c => c.id === selectedCategory)?.name || ''}
+                                </span>
+                                <h3 className={styles.mediaItemTitle}>{item.title}</h3>
+                                <div className={styles.mediaDesc}>
+                                    {getShortDescription(item.description)}
+                                </div>
+                                <div className={styles.mediaFooter}>
+                                    <span className={styles.date}>{item.date}</span>
+                                    <span className={styles.arrow}>→</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
-            </Slider>
-        </div>
+                    ))}
+                </Slider>
+            </div>
             <div className={styles.navigation}>
                 <button className={styles.navButton} onClick={handlePrev}>
                     ←
