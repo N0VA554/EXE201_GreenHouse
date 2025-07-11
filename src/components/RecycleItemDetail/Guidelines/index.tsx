@@ -13,7 +13,9 @@ const RecyclingGuidelines: React.FC = () => {
         <div className={styles.guidelinesContainer}>
             <div className={styles.coloredSection}>
                 <h2 className={styles.sectionTitle}>{data.title}</h2>
-                <p>{data.content}</p>
+                <div
+                    dangerouslySetInnerHTML={{ __html: data.content }}
+                />
             </div>
         </div>
     );

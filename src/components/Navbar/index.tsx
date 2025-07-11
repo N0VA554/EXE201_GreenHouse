@@ -8,10 +8,23 @@ const Navbar: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [userName, setUserName] = useState<string>('');
+    const [userAvatar, setUserAvatar] = useState<string>('https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg'); // Default avatar URL
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        setIsLoggedIn(!!token);
+        const storedUser = localStorage.getItem('user');
+        if (token && storedUser) {
+            setIsLoggedIn(true);
+            const user = JSON.parse(storedUser);
+            setUserName(user.fullName || '');
+            setUserAvatar(user.avatar || 'https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg');
+        } else {
+            setIsLoggedIn(false);
+            setUserName('');
+            setUserAvatar('https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg');
+        }
     }, []);
 
     useEffect(() => {
@@ -39,7 +52,14 @@ const Navbar: React.FC = () => {
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         setIsLoggedIn(false);
+        setUserName('');
+        setUserAvatar('https://example.com/default-avatar.png');
+        setIsDropdownOpen(false);
         navigate('/dang-nhap');
+    };
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
     };
 
     const activeSection = getActiveSection();
@@ -54,10 +74,36 @@ const Navbar: React.FC = () => {
                 <li><Link to="/danhsachphanloai" className={activeSection === 'phanloai' ? styles.active : ''}>PHÂN LOẠI</Link></li>
                 <li><a href="#tongquan" className={activeSection === 'tongquan' ? styles.active : ''}>TỔNG QUAN</a></li>
                 <li><a href="#truyenthong" className={activeSection === 'truyenthong' ? styles.active : ''}>TRUYỀN THÔNG</a></li>
-
-                <li>
+                <li className={styles.userMenu}>
                     {isLoggedIn ? (
-                        <button onClick={handleLogout} className={`${styles.loginButton} ${activeSection === 'dangnhap' ? styles.active : ''}`}>ĐĂNG XUẤT</button>
+                        <div className={styles.userProfile}>
+                            <img
+                                src={userAvatar}
+                                alt="User Avatar"
+                                className={styles.userAvatar}
+                                onClick={toggleDropdown}
+                            />
+                            <span className={styles.userName} onClick={toggleDropdown}>{userName}</span>
+                            {isDropdownOpen && (
+                                <div className={styles.dropdownMenu}>
+                                    
+                                    <Link
+                                        to="/profile"
+                                        className={styles.dropdownItem}
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    >
+                                        Hồ sơ của tôi
+                                    </Link>
+                                    
+                                    <button
+                                        onClick={handleLogout}
+                                        className={styles.dropdownItem}
+                                    >
+                                        Đăng xuất
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     ) : (
                         <Link
                             to="/dang-nhap"

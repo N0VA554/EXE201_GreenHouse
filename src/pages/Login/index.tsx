@@ -50,7 +50,12 @@ const Login: React.FC = () => {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('user', JSON.stringify(users));
-      navigate("/");
+      localStorage.setItem('roleName', users.roleName);
+      if (users.roleName === 'Admin') {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.message || 'Có lỗi xảy ra');
     }

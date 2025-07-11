@@ -159,6 +159,21 @@
     transition: all 0.3s ease;
     border: 1px solid transparent;
 }
+.addBlogButton {
+    padding: 10px 15px;
+    background: #44b15b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.addBlogButton:hover {
+    background: #358e49;
+}
 @media (max-width: 1024px) {
     .mediaItem {
         width: 300px; /* Slightly reduced width for smaller screens */

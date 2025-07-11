@@ -9,8 +9,9 @@ const  RecycleGuideList: React.FC = () => {
     return (
         <div>
             <MiniCarousel/>
-            <Benefits />
+            
             <RecyclableItems />
+            <Benefits />
             <RecyclingProcess/>
         </div>
     );

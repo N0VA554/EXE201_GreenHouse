@@ -1,61 +1,81 @@
 .locationContainer {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
+    max-width: 900px;
+    margin: 32px auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    background: none;
+    box-shadow: none;
+}
+
+.locationCard {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
     background: #f9fafb;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 20px;
+    transition: box-shadow 0.2s;
+}
+
+.locationCard:hover {
+    box-shadow: 0 4px 16px rgba(46,125,50,0.13);
 }
 
 .mapSection {
-    flex: 1;
-}
-
-.mapImage {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
+    flex: 1 1 260px;
+    min-width: 220px;
 }
 
 .detailsSection {
-    flex: 1;
+    flex: 2 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .detailsTitle {
-    font-size: 20px;
+    font-size: 1.2rem;
     color: #2e7d32;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-family: 'Arial', sans-serif;
+    font-weight: 600;
 }
 
 .detailsSection p {
     font-size: 16px;
-    color: #666;
-    margin-bottom: 15px;
+    color: #444;
+    margin-bottom: 12px;
     font-family: 'Arial', sans-serif;
+    line-height: 1.6;
 }
 
 .mapLink {
+    align-self: flex-start;
     display: inline-block;
-    padding: 10px 20px;
+    padding: 8px 18px;
     background: #2e7d32;
     color: white;
     text-decoration: none;
     border-radius: 8px;
-    transition: background 0.3s ease;
+    transition: background 0.3s;
+    font-weight: 500;
+    font-size: 15px;
 }
 
 .mapLink:hover {
     background: #1b5e20;
 }
 
-@media (max-width: 768px) {
-    .locationContainer {
+@media (max-width: 900px) {
+    .locationCard {
         flex-direction: column;
-        text-align: center;
+        align-items: stretch;
+        gap: 16px;
+    }
+    .mapSection {
+        min-width: 0;
     }
 }
