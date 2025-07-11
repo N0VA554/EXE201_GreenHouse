@@ -30,6 +30,9 @@ const Login: React.FC = () => {
       setError('Vui lòng điền đầy đủ email và mật khẩu.');
       return;
     }
+
+    console.log(formData)
+
     try {
       const response = await fetch(`${apiUrl}/accounts/login`, {
         method: 'POST',
