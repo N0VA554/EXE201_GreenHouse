@@ -149,6 +149,7 @@ const DonateCampaign: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedId, setSelectedId] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
+  const [description, setDescription] = useState<string>("");
 
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -187,7 +188,6 @@ const DonateCampaign: React.FC = () => {
   };
 
   const handleEdit = async (data: Partial<Campaign>) => {
-    console.log(data)
     try {
       await axiosInstance.put('/campaigns', { ...data, id: selected?.id });
       setShowEdit(false);
@@ -209,6 +209,28 @@ const DonateCampaign: React.FC = () => {
       alert('Xóa thất bại');
     }
   };
+
+  const handleDonate = async () => {
+    if (!selected) return;
+    try {
+      const userJson = localStorage.getItem('user');
+      const user = JSON.parse(userJson || '{}');
+      const userId = user.id;
+
+      const request = {
+        "amount": amount,
+        "description": description,
+        "userId": userId,
+        "transactionTypeId": "11111111-0000-0000-0000-00000002"
+      }
+      var response = await axiosInstance.post(`momo/create-payment`, JSON.stringify(request), { headers: { "Content-Type": "application/json" } })
+      if (response.status == 200) {
+        window.location.href = response.data.redirectUrl
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const roleName = localStorage.getItem('roleName');
   return (
@@ -260,6 +282,13 @@ const DonateCampaign: React.FC = () => {
 
           <div className={styles.form}>
             <input
+              type="text"
+              placeholder="Nhập mô tả..."
+              className={styles.input}
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+            />
+            <input
               type="number"
               placeholder="Nhập số tiền (vnđ)"
               className={styles.input}
@@ -268,7 +297,7 @@ const DonateCampaign: React.FC = () => {
               min={1}
             />
             <button
-              onClick={() => alert('Cảm ơn bạn đã quyên góp!')}
+              onClick={() => handleDonate()}
               className={styles.donateButton}
               disabled={!selectedId || amount <= 0}
             >
