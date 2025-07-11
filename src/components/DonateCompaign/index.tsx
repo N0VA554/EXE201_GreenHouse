@@ -5,10 +5,15 @@ import styles from './DonateCampaign.module.css';
 interface Campaign {
   id: string;
   title: string;
+  startDate: string;
+  endDate: string;
   description: string;
   imageUrl: string;
   targetAmount: number;
   raisedAmount: number;
+  campaignTypeId: string;
+  status: string;
+  userId: string;
 }
 
 // Tạo axios instance có sẵn token
@@ -38,12 +43,11 @@ const CampaignModal: React.FC<{
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
   };
-  
 
   return (
     <div className={styles.modal}>
@@ -53,6 +57,8 @@ const CampaignModal: React.FC<{
           <div className={styles.formGroup}>
             <label>Tiêu đề</label>
             <input
+              type='text'
+              placeholder='Nhập tiêu đề...'
               name="title"
               value={form.title || ''}
               onChange={handleChange}
@@ -60,8 +66,43 @@ const CampaignModal: React.FC<{
             />
           </div>
           <div className={styles.formGroup}>
+            <label>Mục tiêu</label>
+            <input
+              type='number'
+              placeholder='Nhập mục tiêu...'
+              name="targetAmount"
+              value={form.targetAmount || ''}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className={styles.twoColumn}>
+            <div className={styles.formGroup}>
+              <label>Ngày bắt đầu</label>
+              <input
+                type='date'
+                name="startDate"
+                value={form.startDate || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label>Ngày kết thúc</label>
+              <input
+                type='date'
+                name="endDate"
+                value={form.endDate || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          <div className={styles.formGroup}>
             <label>Mô tả</label>
             <textarea
+              placeholder='Nhập mô tả...'
               name="description"
               value={form.description || ''}
               onChange={handleChange}
@@ -71,6 +112,8 @@ const CampaignModal: React.FC<{
           <div className={styles.formGroup}>
             <label>URL hình ảnh</label>
             <input
+              type='text'
+              placeholder='Nhập URL hình ảnh...'
               name="imageUrl"
               value={form.imageUrl || ''}
               onChange={handleChange}
@@ -130,8 +173,12 @@ const DonateCampaign: React.FC = () => {
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
   const handleCreate = async (data: Partial<Campaign>) => {
+    const userJson = localStorage.getItem('user');
+    const user = JSON.parse(userJson || '{}');
+    const userId = user.id;
+    const payload = { ...data, userId };
     try {
-      await axiosInstance.post('/campaigns', data);
+      await axiosInstance.post('/campaigns', payload);
       setShowCreate(false);
       await fetchCampaigns();
     } catch {
@@ -140,8 +187,9 @@ const DonateCampaign: React.FC = () => {
   };
 
   const handleEdit = async (data: Partial<Campaign>) => {
+    console.log(data)
     try {
-      await axiosInstance.post('/campaigns', { ...data, id: selected?.id });
+      await axiosInstance.put('/campaigns', { ...data, id: selected?.id });
       setShowEdit(false);
       await fetchCampaigns();
     } catch {
@@ -162,7 +210,7 @@ const DonateCampaign: React.FC = () => {
     }
   };
 
-const roleName = localStorage.getItem('roleName');
+  const roleName = localStorage.getItem('roleName');
   return (
     <div className={`${styles.container} ${isCollapsed ? styles.collapsed : ''}`}>
       <CampaignModal
