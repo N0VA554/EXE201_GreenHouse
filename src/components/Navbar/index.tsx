@@ -51,6 +51,7 @@ const Navbar: React.FC = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
+        localStorage.removeItem('roleName');
         setIsLoggedIn(false);
         setUserName('');
         setUserAvatar('https://example.com/default-avatar.png');
@@ -86,15 +87,17 @@ const Navbar: React.FC = () => {
                             <span className={styles.userName} onClick={toggleDropdown}>{userName}</span>
                             {isDropdownOpen && (
                                 <div className={styles.dropdownMenu}>
-                                    
-                                    <Link
-                                        to="/profile"
+
+                                    <button
                                         className={styles.dropdownItem}
-                                        onClick={() => setIsDropdownOpen(false)}
+                                        onClick={() => {
+                                            setIsDropdownOpen(false);
+                                            navigate('/profile');
+                                        }}
                                     >
                                         Hồ sơ của tôi
-                                    </Link>
-                                    
+                                    </button>
+
                                     <button
                                         onClick={handleLogout}
                                         className={styles.dropdownItem}
@@ -105,12 +108,13 @@ const Navbar: React.FC = () => {
                             )}
                         </div>
                     ) : (
-                        <Link
-                            to="/dang-nhap"
+                        <button
                             className={`${styles.loginButton} ${activeSection === 'dangnhap' ? styles.active : ''}`}
+                            onClick={() => navigate('/dang-nhap')}
+                            type="button"
                         >
                             ĐĂNG NHẬP
-                        </Link>
+                        </button>
                     )}
                 </li>
             </ul>
