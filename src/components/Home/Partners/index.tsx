@@ -76,15 +76,17 @@ const Partners: React.FC = () => {
         setShowAddModal(false);
         fetchBrands();
     };
-
+const roleName = localStorage.getItem('roleName') || '';
     return (
         <div className={styles.partnersContainer}>
             <h2 className={styles.title}>Thành viên & Đối tác</h2>
+            {roleName === 'Staff' && (
             <div style={{ textAlign: 'right', marginBottom: 24 }}>
                 <button className={styles.button} onClick={() => setShowAddModal(true)}>
                     Thêm Brand
                 </button>
             </div>
+            )}
             <div className={styles.grid}>
                 {brands.map(brand =>
                     editingId === brand.id && editBrand ? (
@@ -117,10 +119,12 @@ const Partners: React.FC = () => {
                                 onChange={handleEditChange}
                                 placeholder="Mô tả"
                             />
+                            {roleName === 'Staff' && (
                             <div>
                                 <button className={styles.button} onClick={handleEditSave}>Lưu</button>
                                 <button className={styles.button} onClick={() => setEditingId(null)}>Hủy</button>
                             </div>
+                            )}
                         </div>
                     ) : (
                         <div key={brand.id} className={styles.partnerCard}>
@@ -138,15 +142,17 @@ const Partners: React.FC = () => {
                                     <p>{brand.description}</p>
                                 </div>
                             </a>
+                            {roleName === 'Staff' && (
                             <div style={{ marginTop: 12 }}>
                                 <button className={styles.button} onClick={() => handleEdit(brand)}>Sửa</button>
                                 <button className={styles.button} onClick={() => handleDelete(brand.id)}>Xóa</button>
                             </div>
+                            )}
                         </div>
                     )
                 )}
             </div>
-            {showAddModal && (
+            {showAddModal && roleName === 'Staff' && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
                         <h3>Thêm Brand mới</h3>

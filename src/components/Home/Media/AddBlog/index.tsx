@@ -35,21 +35,27 @@ const AddBlog: React.FC<AddBlogProps> = ({ blogTypeId, onClose, onBlogAdded }) =
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const authorId = user.id || "11111111-1111-1111-1111-111111111111";
+
     const payload = {
       id: crypto.randomUUID(),
       title: formData.title,
       content: formData.content,
       imageUrl: formData.imageUrl || 'https://via.placeholder.com/400x250?text=No+Image',
-      authorId: "11111111-1111-1111-1111-111111111111",
+      authorId,
       blogTypeId,
       status: formData.status,
     };
+
+    const token = localStorage.getItem('accessToken');
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/blogs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });

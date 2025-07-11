@@ -95,7 +95,11 @@
     cursor: pointer;
     font-size: 1rem;
     transition: all 0.3s ease;
-    margin-right: 20px;
+    /* margin-right: 20px; */ /* Xóa dòng này */
+    /* margin-top: 30px; */   /* Xóa dòng này */
+    vertical-align: middle;   /* Thêm dòng này */
+    align-self: center;       /* Thêm dòng này */
+    margin-top: 5px;
 }
 
 .loginButton:hover {
