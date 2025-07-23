@@ -1,0 +1,62 @@
+.payement_response {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+}
+
+.response_box {
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+}
+
+.payement_response.success .response_box {
+    background-color: #e6ffed;
+    color: #1a7f37;
+    border: 2px solid #1a7f37;
+}
+
+.payement_response.fail .response_box {
+    background-color: #ffe6e6;
+    color: #cc0000;
+    border: 2px solid #cc0000;
+}
+
+.back_button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back_button:hover {
+    background-color: #45a049;
+}
+
+
+.icon {
+    font-size: 72px;
+    margin-bottom: 16px;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 16px;
+}
+
+p {
+    font-size: 18px;
+}

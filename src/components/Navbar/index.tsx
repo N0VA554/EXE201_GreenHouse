@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import logo from '../../assets/logotrang.png';
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+    baseURL: process.env.REACT_APP_API_URL
+});
 
 const Navbar: React.FC = () => {
     const location = useLocation();
@@ -47,16 +52,27 @@ const Navbar: React.FC = () => {
         return '';
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        localStorage.removeItem('roleName');
-        setIsLoggedIn(false);
-        setUserName('');
-        setUserAvatar('https://example.com/default-avatar.png');
-        setIsDropdownOpen(false);
-        navigate('/dang-nhap');
+    const handleLogout = async () => {
+        try {
+            var data = {
+                accessToken: localStorage.getItem("accessToken"),
+                refreshToken: localStorage.getItem("refreshToken")
+            }
+            var result = await axiosInstance.post(`/accounts/logout`, data, { headers: { "Content-Type": "application/json" } })
+            if (result.data.statusCode == 200) {
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('user');
+                localStorage.removeItem('roleName');
+                setIsLoggedIn(false);
+                setUserName('');
+                setUserAvatar('https://example.com/default-avatar.png');
+                setIsDropdownOpen(false);
+                navigate('/dang-nhap');
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const toggleDropdown = () => {

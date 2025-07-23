@@ -221,7 +221,8 @@ const DonateCampaign: React.FC = () => {
         "amount": amount,
         "description": description,
         "userId": userId,
-        "transactionTypeId": "11111111-0000-0000-0000-00000002"
+        "transactionTypeId": "11111111-0000-0000-0000-00000002",
+        "campaignId": selectedId
       }
       var response = await axiosInstance.post(`momo/create-payment`, JSON.stringify(request), { headers: { "Content-Type": "application/json" } })
       if (response.status == 200) {
