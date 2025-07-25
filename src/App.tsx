@@ -14,6 +14,7 @@ import DonateCampaign from './components/DonateCompaign';
 import { Navigate } from 'react-router-dom';
 import AdminPage from './pages/Admin';
 import PaymentResponse from './components/PaymentResponse';
+import Users from './pages/Users';
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const roleName = localStorage.getItem('roleName');
@@ -37,12 +38,12 @@ const AppContent: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/dang-nhap" element={<Login />} />
         <Route path="/dang-ky" element={<Register />} />
+        <Route path="/profile" element={<Users />} />
         <Route
           path="/admin"
           element={
             <AdminRoute>
               <AdminPage />
-
             </AdminRoute>
           }
         />

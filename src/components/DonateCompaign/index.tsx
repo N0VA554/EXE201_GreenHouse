@@ -144,6 +144,7 @@ const CampaignModal: React.FC<{
   );
 };
 
+
 const DonateCampaign: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);

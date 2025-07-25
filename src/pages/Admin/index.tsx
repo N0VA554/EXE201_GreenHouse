@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './Admin.module.css';
+import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const getAuthHeader = () => ({
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+  },
+});
+
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
   },
@@ -21,10 +29,38 @@ const AdminPage: React.FC = () => {
   const [editUserRoleId, setEditUserRoleId] = useState<string | null>(null);
   const [selectedRoleId, setSelectedRoleId] = useState<string>('');
 
+  const [year, setYear] = useState<string>('2025');
+  const [campaignId, setCampaignId] = useState<string>('3009c3893ec94ee9bf1c45882e17496e');
+  const [campaigns, setCampaigns] = useState([]);
+  const [transactionByYear, setTransactionByYear] = useState([]);
+  const [transactionByYearAndCampaign, setTransactionByYearAndCampaign] = useState([]);
+
   useEffect(() => {
     fetchRoles();
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    fetchTransactionsByYear();
+  }, [year]);
+
+  useEffect(() => {
+    fetchTransactionsByYearAndCampaign();
+  }, [year, campaignId]);
+
+  useEffect(() => {
+    fetchCampaign();
+  }, [])
+
+  const colors = ["#8884d8", "#82ca9d", "#ff7300", "#00C49F", "#FFBB28"];
+
+  const allCampaignKeys = Array.from(
+    new Set(
+      transactionByYear.flatMap(obj =>
+        Object.keys(obj).filter(key => key !== "Month")
+      )
+    )
+  );
 
   const fetchRoles = async () => {
     setLoading(true);
@@ -37,6 +73,34 @@ const AdminPage: React.FC = () => {
     }
     setLoading(false);
   };
+
+  const fetchCampaign = async () => {
+    try {
+      var response = await axiosInstance.get("campaigns");
+      console.log(response);
+      setCampaigns(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const fetchTransactionsByYear = async () => {
+    try {
+      var response = await axiosInstance.get(`transactionlogs/report/${year}`);
+      setTransactionByYear(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const fetchTransactionsByYearAndCampaign = async () => {
+    try {
+      var response = await axiosInstance.get(`transactionlogs/report/${year}/${campaignId}`);
+      setTransactionByYearAndCampaign(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -117,10 +181,79 @@ const AdminPage: React.FC = () => {
     }
     setLoading(false);
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
+
+        <div className={styles.filterWrapper}>
+          <div className={styles.filterItem}>
+            <label htmlFor="yearInput">Năm:</label>
+            <input
+              id="yearInput"
+              type="number"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              className={styles.input}
+              min="2000"
+              max="2100"
+            />
+          </div>
+          <div className={styles.filterItem}>
+            <label htmlFor="campaignSelect">Chiến dịch:</label>
+            <select
+              id="campaignSelect"
+              value={campaignId}
+              onChange={(e) => setCampaignId(e.target.value)}
+              className={styles.input}
+            >
+              {campaigns.map((item: any) => (
+                <option key={item.id} value={item.id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <h2 className={styles.title}>Thống kê theo năm</h2>
+        {/* Get by year chart */}
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={transactionByYear}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="Month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+
+            {/* Dùng map để vẽ Line cho từng chiến dịch */}
+            {allCampaignKeys.map((key, index) => (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stroke={colors[index % colors.length]} // Lặp màu
+                activeDot={{ r: 6 }}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+        <h2 className={styles.title}>Thống kê theo năm và chiến dịch</h2>
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={transactionByYearAndCampaign}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="totalAmount"
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+              name="Tổng tiền"
+            />
+          </LineChart>
+        </ResponsiveContainer>
         <h2 className={styles.title}>Quản lý Roles</h2>
         {loading && <p className={styles.loading}>Đang tải...</p>}
         {error && <p className={styles.error}>{error}</p>}
