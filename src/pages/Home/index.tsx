@@ -4,6 +4,7 @@ import Media from '../../components/Home/Media';
 import WasteStatus from '../../components/Home/WasteStatus';
 import VideoSection from '../../components/Home/VideoSection';
 import Partners from '../../components/Home/Partners';
+import DonateCampaign from '../../components/DonateCompaign';
 
 const Home: React.FC = () => {
     const carouselRef = useRef<HTMLDivElement>(null);
@@ -46,6 +47,7 @@ const Home: React.FC = () => {
             <div ref={mediaRef}>
                 <Media/>
             </div>
+            {/* <DonateCampaign/> */}
             <WasteStatus/>
             <VideoSection/>
             <Partners/>

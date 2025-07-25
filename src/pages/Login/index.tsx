@@ -1,18 +1,22 @@
 import React, { useState, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 
 interface LoginFormData {
-  email: string;
+  username: string;
   password: string;
 }
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const Login: React.FC = () => {
   const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
+    username: '',
     password: '',
   });
   const [error, setError] = useState<string>('');
+
+  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,14 +24,45 @@ const Login: React.FC = () => {
     setError('');
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
+    if (!formData.username || !formData.password) {
       setError('Vui lòng điền đầy đủ email và mật khẩu.');
       return;
     }
-    console.log('Đăng nhập:', formData.email, formData.password);
-    // Add your login API call here
+
+    console.log(formData)
+
+    try {
+      const response = await fetch(`${apiUrl}/accounts/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.statusCode !== 200) {
+        throw new Error(result.message || 'Đăng nhập thất bại');
+      }
+
+      const { accessToken, refreshToken, users } = result.data;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('user', JSON.stringify(users));
+      localStorage.setItem('roleName', users.roleName);
+      if (users.roleName === 'Admin') {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    } catch (err: any) {
+      setError(err.message || 'Có lỗi xảy ra');
+    }
+
   };
 
   return (
@@ -37,17 +72,17 @@ const Login: React.FC = () => {
         {error && <p className={styles.error}>{error}</p>}
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.label}>
+            <label htmlFor="username" className={styles.label}>
               Email
             </label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
               onChange={handleInputChange}
               className={styles.input}
-              placeholder="Nhập email của bạn"
+              placeholder="Nhập username của bạn"
               required
             />
           </div>

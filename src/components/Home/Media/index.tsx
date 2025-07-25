@@ -4,6 +4,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styles from './Media.module.css';
 import { useNavigate } from 'react-router-dom';
+import AddBlog from './AddBlog';
+
 interface BlogType {
     id: string;
     name: string;
@@ -25,6 +27,8 @@ const Media: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
     const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
+    const [showAddBlog, setShowAddBlog] = useState(false);
+    const roleName = localStorage.getItem('roleName');
 
     // Fetch categories on mount
     useEffect(() => {
@@ -38,7 +42,7 @@ const Media: React.FC = () => {
             });
     }, []);
 
-    // Fetch blogs when selectedCategory changes
+    // Fetch blogs when selectedCategory changes or new blog added
     useEffect(() => {
         if (!selectedCategory) return;
         fetch(`${process.env.REACT_APP_API_URL}/blogs/getbyblogtypeid/${selectedCategory}`)
@@ -61,7 +65,7 @@ const Media: React.FC = () => {
                 );
                 setCurrentIndex(0);
             });
-    }, [selectedCategory]);
+    }, [selectedCategory, showAddBlog]);
 
     const settings = {
         dots: false,
@@ -102,13 +106,22 @@ const Media: React.FC = () => {
             [id]: !prev[id],
         }));
     };
+
     const navigate = useNavigate();
+
     const getShortDescription = (html: string, maxLength = 120) => {
         const div = document.createElement('div');
         div.innerHTML = html;
         const text = div.textContent || div.innerText || '';
         return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
     };
+
+    const handleBlogAdded = () => {
+        setShowAddBlog(false);
+        // Trigger re-fetch of blogs
+        setSelectedCategory(selectedCategory);
+    };
+
     return (
         <div className={styles.mediaContainer}>
             <div className={styles.header}>
@@ -124,6 +137,14 @@ const Media: React.FC = () => {
                             {cat.name}
                         </span>
                     ))}
+                    {roleName === 'Staff' && (
+                        <button
+                            className={styles.addBlogButton}
+                            onClick={() => setShowAddBlog(true)}
+                        >
+                            Thêm bài viết
+                        </button>
+                    )}
                 </div>
             </div>
             <div className={styles.mediaList}>
@@ -166,6 +187,13 @@ const Media: React.FC = () => {
             <div className={styles.viewAll}>
                 <a href="#view-all">XEM TẤT CẢ →</a>
             </div>
+            {showAddBlog && selectedCategory && (
+                <AddBlog
+                    blogTypeId={selectedCategory}
+                    onClose={() => setShowAddBlog(false)}
+                    onBlogAdded={handleBlogAdded}
+                />
+            )}
         </div>
     );
 };

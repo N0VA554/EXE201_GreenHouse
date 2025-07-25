@@ -10,21 +10,39 @@ import ScrollToTop from './components/ScrollToTop';
 import BlogDetail from './pages/BlogDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import DonateCampaign from './components/DonateCompaign';
+import { Navigate } from 'react-router-dom';
+import AdminPage from './pages/Admin';
 
-
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const roleName = localStorage.getItem('roleName');
+  if (roleName !== 'Admin') {
+    return <Navigate to="/" replace />;
+  }
+  return <>{children}</>;
+};
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const hideLayout = location.pathname === '/dang-nhap' || location.pathname === '/dang-ky'; // hoặc thêm || location.pathname === '/dang-ky'
+  const hideLayout = location.pathname === '/dang-nhap' || location.pathname === '/dang-ky' ;//|| location.pathname === "/admin"; // hoặc thêm || location.pathname === '/dang-ky'
   
   return (
     <>
       <ScrollToTop />
+      <DonateCampaign/>
       {!hideLayout && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dang-nhap" element={<Login />} />
         <Route path="/dang-ky" element={<Register />} />
-        
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminPage/>
+              
+            </AdminRoute>
+          }
+        />
         <Route path="/danhsachphanloai" element={<RecycleGuideList />} />
         <Route path="/danhsachphanloai/:id" element={<RecycleItem />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
