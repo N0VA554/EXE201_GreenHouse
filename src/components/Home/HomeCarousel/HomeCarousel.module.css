@@ -46,6 +46,7 @@
 .slick-dots li.slick-active button:before {
     color: white;
 }
+
 .scroll-indicator {
     position: absolute;
     bottom: 40px;
@@ -71,9 +72,12 @@
 }
 
 @keyframes bounce {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0) translateX(-50%);
     }
+
     50% {
         transform: translateY(-20px) translateX(-50%);
     }

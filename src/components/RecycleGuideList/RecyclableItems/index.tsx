@@ -150,28 +150,28 @@ const RecyclableItems: React.FC = () => {
       <div className={styles.header}>
         <h2 className={styles.title}>NHỮNG GÌ CÓ THỂ ĐƯỢC TÁI CHẾ?</h2>
         {roleName === 'Staff' && (
-        <div className={styles.buttonGroup}>
-          
-          <button
-            className={styles.addGuideButton}
-            onClick={() => setShowAddGuide(true)}
-          >
-            Thêm hướng dẫn tái chế
-          </button>
-          <button
-            className={styles.addWasteTypeButton}
-            onClick={handleAddWasteTypeClick}
-          >
-            Thêm loại rác thải
-          </button>
-          <button
-            className={styles.editWasteTypeButton}
-            onClick={handleEditWasteTypeClick}
-            disabled={!selectedWasteTypeId}
-          >
-            Chỉnh sửa loại rác thải
-          </button>
-        </div>
+          <div className={styles.buttonGroup}>
+
+            <button
+              className={styles.addGuideButton}
+              onClick={() => setShowAddGuide(true)}
+            >
+              Thêm hướng dẫn tái chế
+            </button>
+            <button
+              className={styles.addWasteTypeButton}
+              onClick={handleAddWasteTypeClick}
+            >
+              Thêm loại rác thải
+            </button>
+            <button
+              className={styles.editWasteTypeButton}
+              onClick={handleEditWasteTypeClick}
+              disabled={!selectedWasteTypeId}
+            >
+              Chỉnh sửa loại rác thải
+            </button>
+          </div>
         )}
       </div>
       <p className={styles.subtitle}>
