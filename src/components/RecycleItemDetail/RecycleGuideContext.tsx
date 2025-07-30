@@ -49,7 +49,7 @@ export const RecycleGuideProvider: React.FC<{ id: string; children: React.ReactN
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    axios.get(`${process.env.REACT_APP_API_URL}/recycleguides/${id}`)
+    axios.get(`${process.env.REACT_APP_API_URL}/recycleguides/waste/${id}`)
       .then(res => setData(res.data.data))
       .catch(() => setError('Không thể tải dữ liệu'))
       .finally(() => setLoading(false));

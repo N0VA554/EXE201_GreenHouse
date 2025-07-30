@@ -77,7 +77,6 @@ const AdminPage: React.FC = () => {
   const fetchCampaign = async () => {
     try {
       var response = await axiosInstance.get("campaigns");
-      console.log(response);
       setCampaigns(response.data.data);
     } catch (error) {
       console.error(error);
