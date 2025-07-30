@@ -13,6 +13,8 @@ import Register from './pages/Register';
 import DonateCampaign from './components/DonateCompaign';
 import { Navigate } from 'react-router-dom';
 import AdminPage from './pages/Admin';
+import PaymentResponse from './components/PaymentResponse';
+import Users from './pages/Users';
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const roleName = localStorage.getItem('roleName');
@@ -23,28 +25,31 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const hideLayout = location.pathname === '/dang-nhap' || location.pathname === '/dang-ky' ;//|| location.pathname === "/admin"; // hoặc thêm || location.pathname === '/dang-ky'
-  
+  const hideLayout = location.pathname === '/dang-nhap'
+    || location.pathname === '/dang-ky'
+    || location.pathname === '/thanhtoan';//|| location.pathname === "/admin"; // hoặc thêm || location.pathname === '/dang-ky'
+
   return (
     <>
       <ScrollToTop />
-      <DonateCampaign/>
+      <DonateCampaign />
       {!hideLayout && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dang-nhap" element={<Login />} />
         <Route path="/dang-ky" element={<Register />} />
+        <Route path="/profile" element={<Users />} />
         <Route
           path="/admin"
           element={
             <AdminRoute>
-              <AdminPage/>
-              
+              <AdminPage />
             </AdminRoute>
           }
         />
         <Route path="/danhsachphanloai" element={<RecycleGuideList />} />
         <Route path="/danhsachphanloai/:id" element={<RecycleItem />} />
+        <Route path="/thanhtoan" element={<PaymentResponse />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
       </Routes>
       {!hideLayout && <Footer />}

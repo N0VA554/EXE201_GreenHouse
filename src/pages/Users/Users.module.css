@@ -1,0 +1,62 @@
+.users_container {
+    display: flex;
+    height: 100vh;
+    background-color: #f4f6f8;
+    padding-top: 4%;
+    /* padding-left: 4%;
+    padding-right: 4%; */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.users_sidebar {
+    width: 240px;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    padding: 30px 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.users_menu_title {
+    margin-bottom: 25px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2e793d;
+}
+
+.users_tab {
+    cursor: pointer;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    transition: all 0.25s ease;
+    color: #333;
+}
+
+.users_tab:hover {
+    background-color: #e8f5ec;
+    transform: translateX(4px);
+    color: #2e793d;
+}
+
+.users_tab.active {
+    background-color: #2e793d;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: inset 4px 0 0 #1f542a;
+}
+
+.users_content {
+    flex: 1;
+    padding: 40px 50px;
+    background-color: #ffffff;
+    border-left: 1px solid #e0e0e0;
+    box-shadow: inset 1px 0 2px rgba(0, 0, 0, 0.03);
+    overflow-y: auto;
+}
+
+.users_content h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2e793d;
+    margin-bottom: 20px;
+}
