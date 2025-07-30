@@ -43,21 +43,52 @@ const Login: React.FC = () => {
       });
 
       const result = await response.json();
+      
+      console.log('Login response:', result);
 
-      if (!response.ok || result.statusCode !== 200) {
+      if (!response.ok ) {
         throw new Error(result.message || 'Đăng nhập thất bại');
       }
 
       const { accessToken, refreshToken, users } = result.data;
 
+      // Store user data
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('user', JSON.stringify(users));
+      localStorage.setItem('userId', users.id);
+      localStorage.setItem('username', users.fullName || users.username);
       localStorage.setItem('roleName', users.roleName);
-      if (users.roleName === 'Admin') {
-        navigate("/admin");
-      } else {
-        navigate("/");
+      
+      // Verify data is stored
+      console.log('Stored data verification:', {
+        accessToken: localStorage.getItem('accessToken') ? 'Present' : 'Missing',
+        userId: localStorage.getItem('userId'),
+        username: localStorage.getItem('username'),
+        roleName: localStorage.getItem('roleName')
+      });
+      
+      console.log('Login successful:', {
+        userId: users.id,
+        username: users.fullName || users.username,
+        roleName: users.roleName
+      });
+      
+      console.log('Navigating to:', users.roleName === 'Admin' ? '/admin' : '/');
+      
+      try {
+        if (users.roleName === 'Admin') {
+          console.log('Navigating to admin page');
+          navigate("/admin");
+        } else {
+          console.log('Navigating to home page');
+          navigate("/", { replace: true });
+        }
+        console.log('Navigation completed');
+      } catch (navError) {
+        console.error('Navigation error:', navError);
+        // Fallback navigation
+        window.location.href = users.roleName === 'Admin' ? '/admin' : '/';
       }
     } catch (err: any) {
       setError(err.message || 'Có lỗi xảy ra');

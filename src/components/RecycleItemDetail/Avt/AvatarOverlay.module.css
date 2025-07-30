@@ -1,7 +1,7 @@
 .avatarOverlay {
     position: absolute;
     left: 50%;
-    bottom: -10px; /* Đè lên phần dưới của minicarousel */
+    top: 30%;
     transform: translateX(-50%);
     z-index: 10;
     /* Có thể thêm box-shadow nếu muốn nổi bật hơn */

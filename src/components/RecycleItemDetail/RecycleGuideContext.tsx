@@ -25,6 +25,7 @@ interface RecycleGuideData {
   videoUrl: string | null;
   wasteId: string;
   waste: Waste;
+  wasteName: string;
 }
 
 interface RecycleGuideContextProps {

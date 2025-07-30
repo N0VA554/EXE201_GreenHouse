@@ -1,0 +1,221 @@
+.hazardsContainer {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.hazardsHeader {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.hazardsTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #d32f2f;
+  margin-bottom: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.hazardsTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #d32f2f, #f44336);
+  border-radius: 2px;
+}
+
+.wasteType {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.wasteTypeLabel {
+  font-weight: 600;
+  color: #666;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.wasteTypeValue {
+  background: linear-gradient(135deg, #2e7d32, #388e3c);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.hazardsContent {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 32px;
+  align-items: start;
+}
+
+.descriptionSection h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.descriptionSection p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 16px;
+}
+
+.imageSection {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.wasteImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  border: 3px solid #fff;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e9ecef;
+  border-top: 4px solid #d32f2f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingContainer p {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #d32f2f;
+  background: #ffebee;
+  border-radius: 16px;
+  border: 2px solid #ffcdd2;
+}
+
+.errorIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.errorContainer h3 {
+  color: #d32f2f;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.errorContainer p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #6c757d;
+  background: #f8f9fa;
+  border-radius: 16px;
+  border: 2px dashed #dee2e6;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.emptyContainer h3 {
+  color: #495057;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.emptyContainer p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@media (max-width: 768px) {
+  .hazardsContent {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .hazardsTitle {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  
+  .descriptionSection h3 {
+    font-size: 18px;
+  }
+  
+  .descriptionSection p {
+    font-size: 15px;
+  }
+  
+  .wasteType {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+} 

@@ -11,7 +11,7 @@ const RecyclingHeader: React.FC = () => {
 
     return (
         <div className={styles.headerContainer}>
-            <h1 className={styles.title}>{data.title}</h1>
+            <h1 className={styles.title}>{data.wasteName}</h1>
             <p className={styles.description}>{data.waste?.description}</p>
         </div>
     );

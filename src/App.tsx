@@ -15,6 +15,8 @@ import { Navigate } from 'react-router-dom';
 import AdminPage from './pages/Admin';
 import PaymentResponse from './components/PaymentResponse';
 import Users from './pages/Users';
+import Posts from './pages/Posts';
+import PostDetail from './pages/PostDetail';
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const roleName = localStorage.getItem('roleName');
@@ -51,6 +53,8 @@ const AppContent: React.FC = () => {
         <Route path="/danhsachphanloai/:id" element={<RecycleItem />} />
         <Route path="/thanhtoan" element={<PaymentResponse />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
+        <Route path="/baiviet" element={<Posts />} />
+        <Route path="/posts/:id" element={<PostDetail />} />
       </Routes>
       {!hideLayout && <Footer />}
     </>

@@ -3,6 +3,8 @@
     color: white;
     padding: 30px 0;
     font-family: 'Arial', sans-serif;
+    
+    margin-top: 30px;
 }
 
 .footerContent {
@@ -13,6 +15,7 @@
     align-items: center;
     padding: 0 20px;
     flex-wrap: wrap;
+    
 }
 
 .logoSection {
