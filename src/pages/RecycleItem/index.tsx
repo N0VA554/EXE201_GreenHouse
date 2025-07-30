@@ -4,8 +4,10 @@ import { RecycleGuideProvider, useRecycleGuide } from '../../components/RecycleI
 import RecyclingHeader from '../../components/RecycleItemDetail/Header';
 import RecyclingGuidelines from '../../components/RecycleItemDetail/Guidelines';
 import RecyclingLocation from '../../components/RecycleItemDetail/Location';
+import Hazards from '../../components/RecycleItemDetail/Hazards';
 import MiniCarousel from '../../components/MiniCarousel';
 import AvatarOverlay from '../../components/RecycleItemDetail/Avt';
+import Breadcrumb from '../../components/Breadcrumb';
 import axios from 'axios';
 import styles from './RecycleItem.module.css';
 import ReactQuill from 'react-quill';
@@ -158,33 +160,119 @@ const RecyclingLocationWrapper: React.FC = () => {
     return <RecyclingLocation wasteId={data.wasteId} />;
 };
 
+const BreadcrumbWrapper: React.FC = () => {
+    const { data, loading } = useRecycleGuide();
+    if (loading) return null;
+    return <Breadcrumb wasteName={data?.wasteName} />;
+};
+
+const AvatarOverlayWrapper: React.FC = () => {
+    const { data, loading } = useRecycleGuide();
+    if (loading) return null;
+    if (!data) return null;
+    return <AvatarOverlay wasteId={data.wasteId} />;
+};
+
+const HazardsWrapper: React.FC = () => {
+    const { data, loading } = useRecycleGuide();
+    if (loading) return null;
+    if (!data) return null;
+    return <Hazards wasteId={data.wasteId} />;
+};
+
 const RecycleItem: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [editOpen, setEditOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('hazards');
+    const roleName = localStorage.getItem('roleName');
 
     if (!id) return <div>Không tìm thấy hướng dẫn</div>;
 
     return (
-        <RecycleGuideProvider id={id}>
+        <>
             <EditGuideModal open={editOpen} onClose={() => setEditOpen(false)} />
             <div style={{ position: 'relative', paddingBottom: 70 }}>
                 <MiniCarousel />
-                <AvatarOverlay />
             </div>
-            <div style={{ paddingTop: 60 }}>
-                <RecyclingHeader />
-                <RecyclingGuidelines />
-                
-                
-                <button
-                    className={styles.editGuideButton}
-                    onClick={() => setEditOpen(true)}
-                >
-                    Chỉnh sửa hướng dẫn
-                </button>
-                <RecyclingLocationWrapper />
-            </div>
-        </RecycleGuideProvider>
+
+            <RecycleGuideProvider id={id}>
+                <div style={{ paddingTop: 0 }}>
+                    <AvatarOverlayWrapper />
+                    <BreadcrumbWrapper />
+                    <RecyclingHeader />
+
+                    {/* Tab Navigation */}
+                    <div className={styles.tabContainer}>
+                        <div className={styles.tabNavigation}>
+                            <button
+                                className={`${styles.tabButton} ${activeTab === 'hazards' ? styles.active : ''}`}
+                                onClick={() => setActiveTab('hazards')}
+                            >
+                                <span className={styles.tabIcon}>⚠️</span>
+                                Tác hại
+                            </button>
+                            <button
+                                className={`${styles.tabButton} ${activeTab === 'guidelines' ? styles.active : ''}`}
+                                onClick={() => setActiveTab('guidelines')}
+                            >
+                                <span className={styles.tabIcon}>📋</span>
+                                Hướng dẫn tái chế
+                            </button>
+                            <button
+                                className={`${styles.tabButton} ${activeTab === 'locations' ? styles.active : ''}`}
+                                onClick={() => setActiveTab('locations')}
+                            >
+                                <span className={styles.tabIcon}>📍</span>
+                                Nơi tái chế
+                            </button>
+
+                            <button
+                                className={`${styles.tabButton} ${activeTab === 'regulations' ? styles.active : ''}`}
+                                onClick={() => setActiveTab('regulations')}
+                            >
+                                <span className={styles.tabIcon}>⚖️</span>
+                                Quy định nhà nước
+                            </button>
+                        </div>
+
+                        {/* Tab Content */}
+                        <div className={styles.tabContent}>
+                            {activeTab === 'guidelines' && (
+                                <div className={styles.tabPanel}>
+                                    <RecyclingGuidelines />
+                                    {roleName === 'Staff' && (
+                                        <button
+                                            className={styles.editGuideButton}
+                                            onClick={() => setEditOpen(true)}
+                                        >
+                                            Chỉnh sửa hướng dẫn
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                            {activeTab === 'locations' && (
+                                <div className={styles.tabPanel}>
+                                    <RecyclingLocationWrapper />
+                                </div>
+                            )}
+                            {activeTab === 'hazards' && (
+                                <div className={styles.tabPanel}>
+                                    <HazardsWrapper />
+                                </div>
+                            )}
+                            {activeTab === 'regulations' && (
+                                <div className={styles.tabPanel}>
+                                    <div className={styles.regulationsContent}>
+                                        <h2>Quy định của Nhà nước về tái chế</h2>
+                                        <p>Nội dung quy định sẽ được cập nhật sớm...</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </RecycleGuideProvider>
+        </>
     );
 };
 

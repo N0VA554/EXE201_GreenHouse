@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
         if (path === '/danhsachphanloai') return 'phanloai';
         if (path === '/dang-nhap') return 'dangnhap';
         if (path.includes('#tongquan')) return 'tongquan';
-        if (path.includes('#truyenthong')) return 'truyenthong';
+        if (path === '/baiviet' || path.startsWith('/posts/')) return 'truyenthong';
         return '';
     };
 
@@ -90,7 +90,7 @@ const Navbar: React.FC = () => {
                 <li><Link to="/" className={activeSection === 'trangchu' ? styles.active : ''}>TRANG CHỦ</Link></li>
                 <li><Link to="/danhsachphanloai" className={activeSection === 'phanloai' ? styles.active : ''}>PHÂN LOẠI</Link></li>
                 <li><a href="#tongquan" className={activeSection === 'tongquan' ? styles.active : ''}>TỔNG QUAN</a></li>
-                <li><a href="#truyenthong" className={activeSection === 'truyenthong' ? styles.active : ''}>TRUYỀN THÔNG</a></li>
+                <li><Link to="/baiviet" className={activeSection === 'truyenthong' ? styles.active : ''}>BÀI VIẾT</Link></li>
                 <li className={styles.userMenu}>
                     {isLoggedIn ? (
                         <div className={styles.userProfile}>

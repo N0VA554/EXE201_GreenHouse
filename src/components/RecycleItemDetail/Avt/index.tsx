@@ -1,17 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import styles from './AvatarOverlay.module.css';
-import { useRecycleGuide } from '../RecycleGuideContext';
 
+interface WasteData {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  wasteTypeId: string;
+  wasteTypeName: string;
+}
 
-const AvatarOverlay: React.FC = () => {
-    const { data, loading } = useRecycleGuide();
+interface Props {
+  wasteId: string;
+}
+
+const AvatarOverlay: React.FC<Props> = ({ wasteId }) => {
+    const [wasteData, setWasteData] = useState<WasteData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        setLoading(true);
+        axios
+            .get(`${process.env.REACT_APP_API_URL}/wastes/${wasteId}`)
+            .then(res => {
+                setWasteData(res.data.data);
+                setError(null);
+            })
+            .catch(err => {
+                console.error('Error fetching waste data:', err);
+                setError('Không thể tải thông tin');
+            })
+            .finally(() => setLoading(false));
+    }, [wasteId]);
 
     if (loading) return <div>Đang tải...</div>;
-    if (!data) return null;
+    if (error || !wasteData) return null;
 
     return (
         <div className={styles.avatarOverlay}>
-            <img src={data.imageUrl} alt={data.title} className={styles.avatarImage} />
+            <img src={wasteData.imageUrl} alt={wasteData.name} className={styles.avatarImage} />
         </div>
     );
 };
