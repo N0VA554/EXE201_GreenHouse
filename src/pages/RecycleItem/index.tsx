@@ -194,7 +194,6 @@ const RecycleItem: React.FC = () => {
             <div style={{ position: 'relative', paddingBottom: 70 }}>
                 <MiniCarousel />
             </div>
-
             <RecycleGuideProvider id={id}>
                 <div style={{ paddingTop: 0 }}>
                     <AvatarOverlayWrapper />
