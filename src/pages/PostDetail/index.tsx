@@ -8,8 +8,8 @@ interface Post {
   id: string;
   title: string;
   content: string;
-  imageUrl: string;
-  videoUrl: string;
+  fileUrl: string;
+  // videoUrl: string;
   authorId: string;
   status: string;
   authorName: string;
@@ -19,8 +19,8 @@ interface Post {
 interface EditForm {
   title: string;
   content: string;
-  imageUrl: string;
-  videoUrl: string;
+  fileUrl: string;
+  // videoUrl: string;
 }
 
 const PostDetail: React.FC = () => {
@@ -33,14 +33,16 @@ const PostDetail: React.FC = () => {
   const [editForm, setEditForm] = useState<EditForm>({
     title: '',
     content: '',
-    imageUrl: '',
-    videoUrl: ''
+    // imageUrl: '',
+    fileUrl: ''
   });
   const [submitting, setSubmitting] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
-  const [videoPreview, setVideoPreview] = useState<string>('');
+  const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string>('');
+  // const [imageFile, setImageFile] = useState<File | null>(null);
+  // const [videoFile, setVideoFile] = useState<File | null>(null);
+  // const [imagePreview, setImagePreview] = useState<string>('');
+  // const [videoPreview, setVideoPreview] = useState<string>('');
 
   const userId = localStorage.getItem('userId') || JSON.parse(localStorage.getItem('user') || '{}').id;
   const username = localStorage.getItem('username') || JSON.parse(localStorage.getItem('user') || '{}').fullName || 'Anonymous';
@@ -67,12 +69,12 @@ const PostDetail: React.FC = () => {
 
   const handleEdit = () => {
     if (!post) return;
-    
+
     setEditForm({
       title: post.title,
       content: post.content,
-      imageUrl: post.imageUrl || '',
-      videoUrl: post.videoUrl || ''
+      // imageUrl: post.imageUrl || '',
+      fileUrl: post.fileUrl || ''
     });
     setIsEditing(true);
   };
@@ -92,25 +94,28 @@ const PostDetail: React.FC = () => {
       formData.append('content', editForm.content.trim());
       formData.append('authorId', userId);
       formData.append('authorName', username);
-      
-      if (imageFile) {
-        formData.append('imageFile', imageFile);
-      }
-      if (videoFile) {
-        formData.append('videoFile', videoFile);
+
+      // if (imageFile) {
+      //   formData.append('imageFile', imageFile);
+      // }
+      // if (videoFile) {
+      //   formData.append('videoFile', videoFile);
+      // }
+      if (file) {
+        formData.append('file', file);
       }
 
-      console.log('Sending update formData:', {
-        id: post?.id,
-        title: editForm.title.trim(),
-        content: editForm.content.trim(),
-        authorId: userId,
-        authorName: username,
-        hasImage: !!imageFile,
-        hasVideo: !!videoFile,
-        imageName: imageFile?.name,
-        videoName: videoFile?.name
-      });
+      // console.log('Sending update formData:', {
+      //   id: post?.id,
+      //   title: editForm.title.trim(),
+      //   content: editForm.content.trim(),
+      //   authorId: userId,
+      //   authorName: username,
+      //   hasImage: !!imageFile,
+      //   hasVideo: !!videoFile,
+      //   imageName: imageFile?.name,
+      //   videoName: videoFile?.name
+      // });
 
       // Log FormData contents for debugging
       formData.forEach((value, key) => {
@@ -132,16 +137,21 @@ const PostDetail: React.FC = () => {
       console.log('Update response:', response.data);
 
       setIsEditing(false);
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
       }
-      if (videoPreview) {
-        URL.revokeObjectURL(videoPreview);
-      }
-      setImageFile(null);
-      setVideoFile(null);
-      setImagePreview('');
-      setVideoPreview('');
+      // if (imagePreview) {
+      //   URL.revokeObjectURL(imagePreview);
+      // }
+      // if (videoPreview) {
+      //   URL.revokeObjectURL(videoPreview);
+      // }
+      setFile(null);
+      setFilePreview('');
+      // setImageFile(null);
+      // setVideoFile(null);
+      // setImagePreview('');
+      // setVideoPreview('');
       fetchPost();
     } catch (error: any) {
       console.error('Error updating post:', error);
@@ -158,7 +168,7 @@ const PostDetail: React.FC = () => {
 
   const handleDelete = async () => {
     if (!post) return;
-    
+
     if (!window.confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
       return;
     }
@@ -176,66 +186,132 @@ const PostDetail: React.FC = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditForm({ title: '', content: '', imageUrl: '', videoUrl: '' });
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
+    setEditForm({ title: '', content: '', fileUrl: '' });
+    if (filePreview) {
+      URL.revokeObjectURL(filePreview);
     }
-    if (videoPreview) {
-      URL.revokeObjectURL(videoPreview);
-    }
-    setImageFile(null);
-    setVideoFile(null);
-    setImagePreview('');
-    setVideoPreview('');
+    // if (imagePreview) {
+    //   URL.revokeObjectURL(imagePreview);
+    // }
+    // if (videoPreview) {
+    //   URL.revokeObjectURL(videoPreview);
+    // }
+    setFile(null);
+    setFilePreview('');
+    // setImageFile(null);
+    // setVideoFile(null);
+    // setImagePreview('');
+    // setVideoPreview('');
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        alert('Kích thước file ảnh không được vượt quá 5MB');
+      // Validate file type
+      if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+        alert('Vui lòng chọn file hợp lệ (JPG, PNG, GIF, MP4, MOV, etc.)');
         return;
       }
-      if (!file.type.startsWith('image/')) {
-        alert('Vui lòng chọn file ảnh hợp lệ');
-        return;
+
+      // Validate file size (5MB limit)
+      if (file.type.startsWith('video/')) {
+        if (file.size > 100 * 1024 * 1024) {
+          alert('Kích thước file ảnh không được vượt quá 100MB');
+          return;
+        }
+      } else if (file.type.startsWith('image/')) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Kích thước file ảnh không được vượt quá 5MB');
+          return;
+        }
       }
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+
+      // Remove previous image if exists
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
+      }
+
+      setFile(file);
+      setFilePreview(URL.createObjectURL(file));
+      console.log('Image selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
     }
   };
 
-  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 50 * 1024 * 1024) { // 50MB limit
-        alert('Kích thước file video không được vượt quá 50MB');
-        return;
-      }
-      if (!file.type.startsWith('video/')) {
-        alert('Vui lòng chọn file video hợp lệ');
-        return;
-      }
-      setVideoFile(file);
-      setVideoPreview(URL.createObjectURL(file));
+  const removeFile = () => {
+    if (filePreview) {
+      URL.revokeObjectURL(filePreview);
+    }
+    setFile(null);
+    setFilePreview('');
+  };
+
+  const isVideo = (url: string) => {
+    try {
+      const decoded = decodeURIComponent(url);
+      const pathWithoutQuery = decoded.split('?')[0]; // bỏ phần ?token
+      return /\.(mp4|webm|ogg)$/i.test(pathWithoutQuery);
+    } catch {
+      return false;
     }
   };
 
-  const removeImage = () => {
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
+  const isImage = (url: string) => {
+    try {
+      const decoded = decodeURIComponent(url);
+      const pathWithoutQuery = decoded.split('?')[0]; // bỏ phần ?token
+      return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(pathWithoutQuery);
+    } catch {
+      return false;
     }
-    setImageFile(null);
-    setImagePreview('');
   };
 
-  const removeVideo = () => {
-    if (videoPreview) {
-      URL.revokeObjectURL(videoPreview);
-    }
-    setVideoFile(null);
-    setVideoPreview('');
-  };
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     if (file.size > 5 * 1024 * 1024) { // 5MB limit
+  //       alert('Kích thước file ảnh không được vượt quá 5MB');
+  //       return;
+  //     }
+  //     if (!file.type.startsWith('image/')) {
+  //       alert('Vui lòng chọn file ảnh hợp lệ');
+  //       return;
+  //     }
+  //     setImageFile(file);
+  //     setImagePreview(URL.createObjectURL(file));
+  //   }
+  // };
+
+  // const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     if (file.size > 50 * 1024 * 1024) { // 50MB limit
+  //       alert('Kích thước file video không được vượt quá 50MB');
+  //       return;
+  //     }
+  //     if (!file.type.startsWith('video/')) {
+  //       alert('Vui lòng chọn file video hợp lệ');
+  //       return;
+  //     }
+  //     setVideoFile(file);
+  //     setVideoPreview(URL.createObjectURL(file));
+  //   }
+  // };
+
+  // const removeImage = () => {
+  //   if (imagePreview) {
+  //     URL.revokeObjectURL(imagePreview);
+  //   }
+  //   setImageFile(null);
+  //   setImagePreview('');
+  // };
+
+  // const removeVideo = () => {
+  //   if (videoPreview) {
+  //     URL.revokeObjectURL(videoPreview);
+  //   }
+  //   setVideoFile(null);
+  //   setVideoPreview('');
+  // };
 
   if (loading) {
     return (
@@ -301,7 +377,7 @@ const PostDetail: React.FC = () => {
                 required
               />
             </div>
-            
+
             <div className={styles.formGroup}>
               <label>Nội dung *</label>
               <textarea
@@ -312,8 +388,32 @@ const PostDetail: React.FC = () => {
                 required
               />
             </div>
-            
+
             <div className={styles.formGroup}>
+              <label>File (tùy chọn)</label>
+              <input
+                type="file"
+                accept="image/*,video/*"
+                onChange={handleFileChange}
+                className={styles.fileInput}
+              />
+              {filePreview && (
+                <div className={styles.filePreview}>
+                  <img src={filePreview} alt="Preview" className={styles.previewImage} />
+                  <div className={styles.imagePreviewInfo}>
+                    <span>📷 file đã chọn: {file?.name}</span>
+                    <span className={styles.fileSize}>
+                      ({((file?.size || 0) / 1024 / 1024).toFixed(2)} MB)
+                    </span>
+                  </div>
+                  <button type="button" onClick={removeFile} className={styles.removeButton}>
+                    ✕ Xóa file
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* <div className={styles.formGroup}>
               <label>Hình ảnh (tùy chọn)</label>
               <input
                 type="file"
@@ -335,9 +435,9 @@ const PostDetail: React.FC = () => {
                   </button>
                 </div>
               )}
-            </div>
-            
-            <div className={styles.formGroup}>
+            </div> */}
+
+            {/* <div className={styles.formGroup}>
               <label>Video (tùy chọn)</label>
               <input
                 type="file"
@@ -358,8 +458,8 @@ const PostDetail: React.FC = () => {
                   </button>
                 </div>
               )}
-            </div>
-            
+            </div> */}
+
             <div className={styles.formActions}>
               <button
                 type="submit"
@@ -386,12 +486,12 @@ const PostDetail: React.FC = () => {
                 <span className={styles.postAuthor}>👤 {post.authorName}</span>
                 {post.createdTime && (
                   <span className={styles.postDate}>
-                    📅 {new Date(post.createdTime).toLocaleDateString('vi-VN', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric', 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
+                    📅 {new Date(post.createdTime).toLocaleDateString('vi-VN', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
                     })}
                   </span>
                 )}
@@ -401,7 +501,22 @@ const PostDetail: React.FC = () => {
               </div>
             </div>
 
-            {post.imageUrl && (
+            {post.fileUrl && isImage(post.fileUrl) && (
+              <div className={styles.postImage}>
+                <img src={post.fileUrl} alt={post.title} />
+              </div>
+            )}
+
+            {post.fileUrl && isVideo(post.fileUrl) && (
+              <div className={styles.postVideo}>
+                <video controls className={styles.videoPlayer}>
+                  <source src={post.fileUrl} />
+                  Trình duyệt của bạn không hỗ trợ video.
+                </video>
+              </div>
+            )}
+
+            {/* {post.imageUrl && (
               <div className={styles.postImage}>
                 <img src={post.imageUrl} alt={post.title} />
               </div>
@@ -414,7 +529,7 @@ const PostDetail: React.FC = () => {
                   Trình duyệt của bạn không hỗ trợ video.
                 </video>
               </div>
-            )}
+            )} */}
 
             <div className={styles.postContent}>
               <div

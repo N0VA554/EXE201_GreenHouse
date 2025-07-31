@@ -9,8 +9,8 @@ interface Post {
   id: string;
   title: string;
   content: string;
-  imageUrl: string;
-  videoUrl: string;
+  // imageUrl: string;
+  fileUrl: string;
   authorId: string;
   status: string;
   authorName: string;
@@ -20,8 +20,8 @@ interface Post {
 interface CreatePostForm {
   title: string;
   content: string;
-  imageUrl: string;
-  videoUrl: string;
+  fileUrl: string;
+  // videoUrl: string;
 }
 
 const Posts: React.FC = () => {
@@ -31,8 +31,8 @@ const Posts: React.FC = () => {
   const [createForm, setCreateForm] = useState<CreatePostForm>({
     title: '',
     content: '',
-    imageUrl: '',
-    videoUrl: ''
+    // imageUrl: '',
+    fileUrl: ''
   });
   const [submitting, setSubmitting] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -40,10 +40,12 @@ const Posts: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize] = useState(10);
   const [viewMode, setViewMode] = useState<'all' | 'my'>('all');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
-  const [videoPreview, setVideoPreview] = useState<string>('');
+  const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string>('');
+  // const [imageFile, setImageFile] = useState<File | null>(null);
+  // const [videoFile, setVideoFile] = useState<File | null>(null);
+  // const [imagePreview, setImagePreview] = useState<string>('');
+  // const [videoPreview, setVideoPreview] = useState<string>('');
 
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId') || JSON.parse(localStorage.getItem('user') || '{}').id;
@@ -96,17 +98,21 @@ const Posts: React.FC = () => {
       formData.append('content', createForm.content.trim());
       formData.append('authorId', userId);
       formData.append('authorName', username);
-      
-      // Append image file if selected
-      if (imageFile) {
-        formData.append('imageFile', imageFile);
-        console.log('Adding image file:', imageFile.name, 'Size:', imageFile.size, 'bytes');
-      }
-      
-      // Append video file if selected
-      if (videoFile) {
-        formData.append('videoFile', videoFile);
-        console.log('Adding video file:', videoFile.name, 'Size:', videoFile.size, 'bytes');
+
+      // // Append image file if selected
+      // if (imageFile) {
+      //   formData.append('imageFile', imageFile);
+      //   console.log('Adding image file:', imageFile.name, 'Size:', imageFile.size, 'bytes');
+      // }
+
+      // // Append video file if selected
+      // if (videoFile) {
+      //   formData.append('videoFile', videoFile);
+      //   console.log('Adding video file:', videoFile.name, 'Size:', videoFile.size, 'bytes');
+      // }
+
+      if (file) {
+        formData.append('file', file)
       }
 
       // Log FormData contents for debugging
@@ -140,26 +146,31 @@ const Posts: React.FC = () => {
       console.log('Post created successfully:', response.data);
 
       // Reset form and close modal
-      setCreateForm({ title: '', content: '', imageUrl: '', videoUrl: '' });
-      
+      setCreateForm({ title: '', content: '', fileUrl: '' });
+
       // Clean up preview URLs
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
+      // if (imagePreview) {
+      //   URL.revokeObjectURL(imagePreview);
+      // }
+      // if (videoPreview) {
+      //   URL.revokeObjectURL(videoPreview);
+      // }
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
       }
-      if (videoPreview) {
-        URL.revokeObjectURL(videoPreview);
-      }
-      
+
       // Reset file states
-      setImageFile(null);
-      setVideoFile(null);
-      setImagePreview('');
-      setVideoPreview('');
+      // setImageFile(null);
+      // setVideoFile(null);
+      setFile(null);
+      // setImagePreview('');
+      // setVideoPreview('');
+      setFilePreview('');
       setShowCreateForm(false);
-      
+
       // Refresh posts list
       fetchPosts();
-      
+
       alert('Bài viết đã được tạo thành công!');
     } catch (error: any) {
       console.error('Error creating post:', error);
@@ -205,72 +216,133 @@ const Posts: React.FC = () => {
     setSearchKeyword('');
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     // Validate file type
+  //     if (!file.type.startsWith('image/')) {
+  //       alert('Vui lòng chọn file ảnh hợp lệ (JPG, PNG, GIF, etc.)');
+  //       return;
+  //     }
+
+  //     // Validate file size (5MB limit)
+  //     if (file.size > 5 * 1024 * 1024) {
+  //       alert('Kích thước file ảnh không được vượt quá 5MB');
+  //       return;
+  //     }
+
+  //     // Remove previous image if exists
+  //     if (imagePreview) {
+  //       URL.revokeObjectURL(imagePreview);
+  //     }
+
+  //     setImageFile(file);
+  //     setImagePreview(URL.createObjectURL(file));
+  //     console.log('Image selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+  //   }
+  // };
+
+  // const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     // Validate file type
+  //     if (!file.type.startsWith('video/')) {
+  //       alert('Vui lòng chọn file video hợp lệ (MP4, AVI, MOV, etc.)');
+  //       return;
+  //     }
+
+  //     // Validate file size (50MB limit)
+  //     if (file.size > 50 * 1024 * 1024) {
+  //       alert('Kích thước file video không được vượt quá 50MB');
+  //       return;
+  //     }
+
+  //     // Remove previous video if exists
+  //     if (videoPreview) {
+  //       URL.revokeObjectURL(videoPreview);
+  //     }
+
+  //     setVideoFile(file);
+  //     setVideoPreview(URL.createObjectURL(file));
+  //     console.log('Video selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+  //   }
+  // };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Vui lòng chọn file ảnh hợp lệ (JPG, PNG, GIF, etc.)');
+      if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+        alert('Vui lòng chọn file hợp lệ (JPG, PNG, GIF, MP4, MOV, etc.)');
         return;
       }
-      
+
       // Validate file size (5MB limit)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Kích thước file ảnh không được vượt quá 5MB');
-        return;
+      if (file.type.startsWith('video/')) {
+        if (file.size > 100 * 1024 * 1024) {
+          alert('Kích thước file ảnh không được vượt quá 100MB');
+          return;
+        }
+      } else if (file.type.startsWith('image/')) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Kích thước file ảnh không được vượt quá 5MB');
+          return;
+        }
       }
-      
+
       // Remove previous image if exists
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
       }
-      
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+
+      setFile(file);
+      setFilePreview(URL.createObjectURL(file));
       console.log('Image selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
     }
   };
 
-  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('video/')) {
-        alert('Vui lòng chọn file video hợp lệ (MP4, AVI, MOV, etc.)');
-        return;
-      }
-      
-      // Validate file size (50MB limit)
-      if (file.size > 50 * 1024 * 1024) {
-        alert('Kích thước file video không được vượt quá 50MB');
-        return;
-      }
-      
-      // Remove previous video if exists
-      if (videoPreview) {
-        URL.revokeObjectURL(videoPreview);
-      }
-      
-      setVideoFile(file);
-      setVideoPreview(URL.createObjectURL(file));
-      console.log('Video selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+  const removeFile = () => {
+    if (filePreview) {
+      URL.revokeObjectURL(filePreview);
+    }
+    setFile(null);
+    setFilePreview('');
+  };
+
+  // const removeImage = () => {
+  //   if (imagePreview) {
+  //     URL.revokeObjectURL(imagePreview);
+  //   }
+  //   setImageFile(null);
+  //   setImagePreview('');
+  // };
+
+  // const removeVideo = () => {
+  //   if (videoPreview) {
+  //     URL.revokeObjectURL(videoPreview);
+  //   }
+  //   setVideoFile(null);
+  //   setVideoPreview('');
+  // };
+
+  const isVideo = (url: string) => {
+    try {
+      const decoded = decodeURIComponent(url);
+      const pathWithoutQuery = decoded.split('?')[0]; // bỏ phần ?token
+      return /\.(mp4|webm|ogg)$/i.test(pathWithoutQuery);
+    } catch {
+      return false;
     }
   };
 
-  const removeImage = () => {
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
+  const isImage = (url: string) => {
+    try {
+      const decoded = decodeURIComponent(url);
+      const pathWithoutQuery = decoded.split('?')[0]; // bỏ phần ?token
+      return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(pathWithoutQuery);
+    } catch {
+      return false;
     }
-    setImageFile(null);
-    setImagePreview('');
-  };
-
-  const removeVideo = () => {
-    if (videoPreview) {
-      URL.revokeObjectURL(videoPreview);
-    }
-    setVideoFile(null);
-    setVideoPreview('');
   };
 
   const handlePageChange = (page: number) => {
@@ -283,7 +355,7 @@ const Posts: React.FC = () => {
         <div className={styles.loginPrompt}>
           <h2>Vui lòng đăng nhập</h2>
           <p>Bạn cần đăng nhập để xem và tạo bài viết.</p>
-          <button 
+          <button
             className={styles.loginButton}
             onClick={() => navigate('/login')}
           >
@@ -296,261 +368,286 @@ const Posts: React.FC = () => {
 
   return (
     <>
-      <MiniCarousel/>
-    <div className={styles.container}>
-      {/* Header */}
-      {/* <div className={styles.header}>
+      <MiniCarousel />
+      <div className={styles.container}>
+        {/* Header */}
+        {/* <div className={styles.header}>
         <h1 className={styles.title}>📰 Bài viết cộng đồng</h1>
         <p className={styles.subtitle}>
           Chia sẻ kiến thức, kinh nghiệm và ý tưởng về môi trường
         </p>
       </div> */}
 
-      {/* View Mode Tabs */}
-      <div className={styles.viewModeTabs}>
-        <button
-          className={`${styles.tabButton} ${viewMode === 'all' ? styles.active : ''}`}
-          onClick={() => handleViewModeChange('all')}
-        >
-          📰 Tất cả bài viết
-        </button>
-        <button
-          className={`${styles.tabButton} ${viewMode === 'my' ? styles.active : ''}`}
-          onClick={() => handleViewModeChange('my')}
-        >
-          👤 Bài viết của tôi
-        </button>
-      </div>
-
-      {/* Search and Create */}
-      <div className={styles.actions}>
-        {viewMode === 'all' && (
-          <form onSubmit={handleSearch} className={styles.searchForm}>
-            <input
-              type="text"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              placeholder="Tìm kiếm bài viết..."
-              className={styles.searchInput}
-            />
-            <button type="submit" className={styles.searchButton}>
-              🔍 Tìm kiếm
-            </button>
-          </form>
-        )}
-        <button className={styles.createButton} onClick={() => setShowCreateForm(true)}>
-          ✏️ Tạo bài viết mới
-        </button>
-      </div>
-
-      {/* Create Post Modal */}
-      {showCreateForm && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <h2>Tạo bài viết mới</h2>
-            <form onSubmit={handleCreatePost}>
-              <div className={styles.formGroup}>
-                <label>Tiêu đề *</label>
-                <input
-                  type="text"
-                  value={createForm.title}
-                  onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })}
-                  className={styles.input}
-                  required
-                />
-              </div>
-              
-              <div className={styles.formGroup}>
-                <label>Nội dung *</label>
-                <textarea
-                  value={createForm.content}
-                  onChange={(e) => setCreateForm({ ...createForm, content: e.target.value })}
-                  className={styles.textarea}
-                  rows={8}
-                  required
-                />
-              </div>
-              
-              <div className={styles.formGroup}>
-                <label>Hình ảnh (tùy chọn)</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className={styles.fileInput}
-                />
-                {imagePreview && (
-                  <div className={styles.filePreview}>
-                    <img src={imagePreview} alt="Preview" className={styles.previewImage} />
-                    <div className={styles.imagePreviewInfo}>
-                      <span>📷 Ảnh đã chọn: {imageFile?.name}</span>
-                      <span className={styles.fileSize}>
-                        ({((imageFile?.size || 0) / 1024 / 1024).toFixed(2)} MB)
-                      </span>
-                    </div>
-                    <button type="button" onClick={removeImage} className={styles.removeButton}>
-                      ✕ Xóa ảnh
-                    </button>
-                  </div>
-                )}
-              </div>
-              
-              <div className={styles.formGroup}>
-                <label>Video (tùy chọn)</label>
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={handleVideoChange}
-                  className={styles.fileInput}
-                />
-                {videoPreview && (
-                  <div className={styles.filePreview}>
-                    <div className={styles.videoPreviewInfo}>
-                      <span>📹 Video đã chọn: {videoFile?.name}</span>
-                      <span className={styles.fileSize}>
-                        ({((videoFile?.size || 0) / 1024 / 1024).toFixed(2)} MB)
-                      </span>
-                    </div>
-                    <button type="button" onClick={removeVideo} className={styles.removeButton}>
-                      ✕ Xóa video
-                    </button>
-                  </div>
-                )}
-              </div>
-              
-              <div className={styles.modalActions}>
-                <button
-                  type="submit"
-                  className={styles.submitButton}
-                  disabled={submitting}
-                >
-                  {submitting ? '🔄 Đang tạo bài viết...' : 'Tạo bài viết'}
-                </button>
-                <button
-                  type="button"
-                  className={styles.cancelButton}
-                  onClick={() => setShowCreateForm(false)}
-                  disabled={submitting}
-                >
-                  Hủy
-                </button>
-              </div>
-            </form>
-          </div>
+        {/* View Mode Tabs */}
+        <div className={styles.viewModeTabs}>
+          <button
+            className={`${styles.tabButton} ${viewMode === 'all' ? styles.active : ''}`}
+            onClick={() => handleViewModeChange('all')}
+          >
+            📰 Tất cả bài viết
+          </button>
+          <button
+            className={`${styles.tabButton} ${viewMode === 'my' ? styles.active : ''}`}
+            onClick={() => handleViewModeChange('my')}
+          >
+            👤 Bài viết của tôi
+          </button>
         </div>
-      )}
 
-      {/* Posts List */}
-      <div className={styles.postsContainer}>
-        {loading ? (
-          <div className={styles.loading}>
-            <div className={styles.spinner}></div>
-            <p>Đang tải bài viết...</p>
-          </div>
-        ) : posts.length === 0 ? (
-          <div className={styles.emptyState}>
-            <p>Chưa có bài viết nào.</p>
-            {!searchKeyword && (
-              <button
-                className={styles.createFirstButton}
-                onClick={() => setShowCreateForm(true)}
-              >
-                Tạo bài viết đầu tiên
+        {/* Search and Create */}
+        <div className={styles.actions}>
+          {viewMode === 'all' && (
+            <form onSubmit={handleSearch} className={styles.searchForm}>
+              <input
+                type="text"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                placeholder="Tìm kiếm bài viết..."
+                className={styles.searchInput}
+              />
+              <button type="submit" className={styles.searchButton}>
+                🔍 Tìm kiếm
               </button>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className={styles.postsList}>
-              {posts.map((post) => (
-                <div key={post.id} className={styles.postCard}>
-                  {post.imageUrl && (
-                    <div className={styles.postImage}>
-                      <img src={post.imageUrl} alt={post.title} />
-                    </div>
-                  )}
-                  {post.videoUrl && (
-                    <div className={styles.postVideo}>
-                      <video controls className={styles.videoPlayer}>
-                        <source src={post.videoUrl} />
-                        Trình duyệt của bạn không hỗ trợ video.
-                      </video>
-                    </div>
-                  )}
-                  
-                  <div className={styles.postContent}>
-                    <h3 
-                      className={styles.postTitle}
-                      onClick={() => navigate(`/posts/${post.id}`)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {post.title}
-                    </h3>
-                    <p className={styles.postExcerpt}>
-                      {post.content.length > 200 
-                        ? `${post.content.substring(0, 200)}...` 
-                        : post.content}
-                    </p>
-                    <div className={styles.postMeta}>
-                      <span className={styles.postAuthor}>👤 {post.authorName}</span>
-                      {post.createdTime && (
-                        <span className={styles.postDate}>
-                          📅 {new Date(post.createdTime).toLocaleDateString('vi-VN')}
+            </form>
+          )}
+          <button className={styles.createButton} onClick={() => setShowCreateForm(true)}>
+            ✏️ Tạo bài viết mới
+          </button>
+        </div>
+
+        {/* Create Post Modal */}
+        {showCreateForm && (
+          <div className={styles.modal}>
+            <div className={styles.modalContent}>
+              <h2>Tạo bài viết mới</h2>
+              <form onSubmit={handleCreatePost}>
+                <div className={styles.formGroup}>
+                  <label>Tiêu đề *</label>
+                  <input
+                    type="text"
+                    value={createForm.title}
+                    onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })}
+                    className={styles.input}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Nội dung *</label>
+                  <textarea
+                    value={createForm.content}
+                    onChange={(e) => setCreateForm({ ...createForm, content: e.target.value })}
+                    className={styles.textarea}
+                    rows={8}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>File (tùy chọn)</label>
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    onChange={handleFileChange}
+                    className={styles.fileInput}
+                  />
+                  {filePreview && (
+                    <div className={styles.filePreview}>
+                      <img src={filePreview} alt="Preview" className={styles.previewImage} />
+                      <div className={styles.imagePreviewInfo}>
+                        <span>📷 file đã chọn: {file?.name}</span>
+                        <span className={styles.fileSize}>
+                          ({((file?.size || 0) / 1024 / 1024).toFixed(2)} MB)
                         </span>
-                      )}
-                      <span className={styles.postStatus}>
-                        {post.status === 'Published' ? '✅ Đã xuất bản' : '⏳ Chờ duyệt'}
-                      </span>
+                      </div>
+                      <button type="button" onClick={removeFile} className={styles.removeButton}>
+                        ✕ Xóa file
+                      </button>
                     </div>
-                    <div className={styles.postActions}>
-                      {post.authorId === userId && (
-                        <>
-                          <button
-                            className={styles.editButton}
-                            onClick={() => navigate(`/posts/${post.id}`)}
-                          >
-                            ✏️ Sửa
-                          </button>
-                          <button
-                            className={styles.deleteButton}
-                            onClick={() => handleDeletePost(post.id)}
-                          >
-                            🗑️ Xóa
-                          </button>
-                        </>
-                      )}
+                  )}
+                </div>
+
+                {/* <div className={styles.formGroup}>
+                  <label>Hình ảnh (tùy chọn)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className={styles.fileInput}
+                  />
+                  {imagePreview && (
+                    <div className={styles.filePreview}>
+                      <img src={imagePreview} alt="Preview" className={styles.previewImage} />
+                      <div className={styles.imagePreviewInfo}>
+                        <span>📷 Ảnh đã chọn: {imageFile?.name}</span>
+                        <span className={styles.fileSize}>
+                          ({((imageFile?.size || 0) / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                      </div>
+                      <button type="button" onClick={removeImage} className={styles.removeButton}>
+                        ✕ Xóa ảnh
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Video (tùy chọn)</label>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={handleVideoChange}
+                    className={styles.fileInput}
+                  />
+                  {videoPreview && (
+                    <div className={styles.filePreview}>
+                      <div className={styles.videoPreviewInfo}>
+                        <span>📹 Video đã chọn: {videoFile?.name}</span>
+                        <span className={styles.fileSize}>
+                          ({((videoFile?.size || 0) / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                      </div>
+                      <button type="button" onClick={removeVideo} className={styles.removeButton}>
+                        ✕ Xóa video
+                      </button>
+                    </div>
+                  )}
+                </div> */}
+
+                <div className={styles.modalActions}>
+                  <button
+                    type="submit"
+                    className={styles.submitButton}
+                    disabled={submitting}
+                  >
+                    {submitting ? '🔄 Đang tạo bài viết...' : 'Tạo bài viết'}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={() => setShowCreateForm(false)}
+                    disabled={submitting}
+                  >
+                    Hủy
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Posts List */}
+        <div className={styles.postsContainer}>
+          {loading ? (
+            <div className={styles.loading}>
+              <div className={styles.spinner}></div>
+              <p>Đang tải bài viết...</p>
+            </div>
+          ) : posts.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p>Chưa có bài viết nào.</p>
+              {!searchKeyword && (
+                <button
+                  className={styles.createFirstButton}
+                  onClick={() => setShowCreateForm(true)}
+                >
+                  Tạo bài viết đầu tiên
+                </button>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className={styles.postsList}>
+                {posts.map((post) => (
+                  <div key={post.id} className={styles.postCard}>
+                    {post.fileUrl && isImage(post.fileUrl) && (
+                      <div className={styles.postImage}>
+                        <img src={post.fileUrl} alt={post.title} />
+                      </div>
+                    )}
+
+                    {post.fileUrl && isVideo(post.fileUrl) && (
+                      <div className={styles.postVideo}>
+                        <video controls className={styles.videoPlayer}>
+                          <source src={post.fileUrl} />
+                          Trình duyệt của bạn không hỗ trợ video.
+                        </video>
+                      </div>
+                    )}
+
+                    <div className={styles.postContent}>
+                      <h3
+                        className={styles.postTitle}
+                        onClick={() => navigate(`/posts/${post.id}`)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {post.title}
+                      </h3>
+                      <p className={styles.postExcerpt}>
+                        {post.content.length > 200
+                          ? `${post.content.substring(0, 200)}...`
+                          : post.content}
+                      </p>
+                      <div className={styles.postMeta}>
+                        <span className={styles.postAuthor}>👤 {post.authorName}</span>
+                        {post.createdTime && (
+                          <span className={styles.postDate}>
+                            📅 {new Date(post.createdTime).toLocaleDateString('vi-VN')}
+                          </span>
+                        )}
+                        <span className={styles.postStatus}>
+                          {post.status === 'Published' ? '✅ Đã xuất bản' : '⏳ Chờ duyệt'}
+                        </span>
+                      </div>
+                      <div className={styles.postActions}>
+                        {post.authorId === userId && (
+                          <>
+                            <button
+                              className={styles.editButton}
+                              onClick={() => navigate(`/posts/${post.id}`)}
+                            >
+                              ✏️ Sửa
+                            </button>
+                            <button
+                              className={styles.deleteButton}
+                              onClick={() => handleDeletePost(post.id)}
+                            >
+                              🗑️ Xóa
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {!searchKeyword && viewMode === 'all' && totalPages > 1 && (
-              <div className={styles.pagination}>
-                <button
-                  className={styles.pageButton}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  ← Trước
-                </button>
-                <span className={styles.pageInfo}>
-                  Trang {currentPage} / {totalPages}
-                </span>
-                <button
-                  className={styles.pageButton}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  Sau →
-                </button>
+                ))}
               </div>
-            )}
-          </>
-        )}
+
+              {/* Pagination */}
+              {!searchKeyword && viewMode === 'all' && totalPages > 1 && (
+                <div className={styles.pagination}>
+                  <button
+                    className={styles.pageButton}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    ← Trước
+                  </button>
+                  <span className={styles.pageInfo}>
+                    Trang {currentPage} / {totalPages}
+                  </span>
+                  <button
+                    className={styles.pageButton}
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Sau →
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 };

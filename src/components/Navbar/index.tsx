@@ -59,7 +59,7 @@ const Navbar: React.FC = () => {
                 refreshToken: localStorage.getItem("refreshToken")
             }
             var result = await axiosInstance.post(`/accounts/logout`, data, { headers: { "Content-Type": "application/json" } })
-            if (result.data.statusCode == 200) {
+            if (result.data.code == "Success") {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
                 localStorage.removeItem('user');
