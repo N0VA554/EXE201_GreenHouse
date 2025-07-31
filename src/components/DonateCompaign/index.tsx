@@ -16,7 +16,6 @@ interface Campaign {
   userId: string;
 }
 
-// Tạo axios instance có sẵn token
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
@@ -52,65 +51,79 @@ const CampaignModal: React.FC<{
   return (
     <div className={styles.modal}>
       <div className={styles.modalContent}>
-        <h3>{isEdit ? 'Chỉnh sửa chiến dịch' : 'Tạo chiến dịch mới'}</h3>
-        <form onSubmit={handleSubmit}>
+        <div className={styles.modalHeader}>
+          <h3>{isEdit ? '✏️ Chỉnh sửa chiến dịch' : '➕ Tạo chiến dịch mới'}</h3>
+          <button 
+            className={styles.closeButton}
+            onClick={onClose}
+          >
+            ×
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className={styles.modalForm}>
           <div className={styles.formGroup}>
-            <label>Tiêu đề</label>
+            <label>Tiêu đề *</label>
             <input
               type='text'
-              placeholder='Nhập tiêu đề...'
+              placeholder='Nhập tiêu đề chiến dịch...'
               name="title"
               value={form.title || ''}
               onChange={handleChange}
               required
+              className={styles.input}
             />
           </div>
           <div className={styles.formGroup}>
-            <label>Mục tiêu</label>
+            <label>Mục tiêu (VNĐ) *</label>
             <input
               type='number'
-              placeholder='Nhập mục tiêu...'
+              placeholder='Nhập số tiền mục tiêu...'
               name="targetAmount"
               value={form.targetAmount || ''}
               onChange={handleChange}
               required
+              className={styles.input}
             />
           </div>
 
           <div className={styles.twoColumn}>
             <div className={styles.formGroup}>
-              <label>Ngày bắt đầu</label>
+              <label>Ngày bắt đầu *</label>
               <input
                 type='date'
                 name="startDate"
                 value={form.startDate || ''}
                 onChange={handleChange}
                 required
+                className={styles.input}
               />
             </div>
             <div className={styles.formGroup}>
-              <label>Ngày kết thúc</label>
+              <label>Ngày kết thúc *</label>
               <input
                 type='date'
                 name="endDate"
                 value={form.endDate || ''}
                 onChange={handleChange}
                 required
+                className={styles.input}
               />
             </div>
           </div>
           <div className={styles.formGroup}>
-            <label>Mô tả</label>
+            <label>Mô tả *</label>
             <textarea
-              placeholder='Nhập mô tả...'
+              placeholder='Nhập mô tả chiến dịch...'
               name="description"
               value={form.description || ''}
               onChange={handleChange}
               required
+              className={styles.textarea}
+              rows={4}
             />
           </div>
           <div className={styles.formGroup}>
-            <label>URL hình ảnh</label>
+            <label>URL hình ảnh *</label>
             <input
               type='text'
               placeholder='Nhập URL hình ảnh...'
@@ -118,20 +131,20 @@ const CampaignModal: React.FC<{
               value={form.imageUrl || ''}
               onChange={handleChange}
               required
+              className={styles.input}
             />
           </div>
           <div className={styles.modalActions}>
             <button type="submit" className={styles.submitButton}>
-              {isEdit ? 'Lưu' : 'Tạo'}
+              {isEdit ? '💾 Lưu thay đổi' : '➕ Tạo chiến dịch'}
             </button>
             {isEdit && onDelete && (
               <button
                 type="button"
                 className={styles.deleteButton}
                 onClick={onDelete}
-                style={{ marginLeft: 8 }}
               >
-                Xóa
+                🗑️ Xóa chiến dịch
               </button>
             )}
             <button type="button" className={styles.cancelButton} onClick={onClose}>
@@ -144,14 +157,12 @@ const CampaignModal: React.FC<{
   );
 };
 
-
 const DonateCampaign: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedId, setSelectedId] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
   const [description, setDescription] = useState<string>("");
-
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
@@ -235,6 +246,7 @@ const DonateCampaign: React.FC = () => {
   }
 
   const roleName = localStorage.getItem('roleName');
+  
   return (
     <div className={`${styles.container} ${isCollapsed ? styles.collapsed : ''}`}>
       <CampaignModal
@@ -253,97 +265,136 @@ const DonateCampaign: React.FC = () => {
 
       {isCollapsed ? (
         <button onClick={toggleCollapse} className={styles.iconButton}>
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/240/240437.png"
-            alt="Expand Donation"
-            className={styles.icon}
-          />
+          <div className={styles.iconWrapper}>
+            <span className={styles.iconText}>💝</span>
+          </div>
         </button>
       ) : (
         <div className={styles.content}>
           <div className={styles.header}>
-            <h2 className={styles.title}>Chọn chiến dịch quyên góp</h2>
+            <div className={styles.headerContent}>
+              <h2 className={styles.title}>💝 Chiến Dịch Quyên Góp</h2>
+              <p className={styles.subtitle}>Hãy chung tay ủng hộ các chiến dịch ý nghĩa</p>
+            </div>
             <button onClick={toggleCollapse} className={styles.closeButton}>
-              <svg className={styles.closeIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <span>×</span>
             </button>
           </div>
 
-          <div className={styles.campaignList}>
-            {campaigns.map(c => (
+          <div className={styles.campaignSection}>
+            <h3 className={styles.sectionTitle}>📋 Chọn chiến dịch</h3>
+            <div className={styles.campaignList}>
+              {campaigns.map(c => (
+                <button
+                  key={c.id}
+                  className={`${styles.campaignButton} ${selectedId === c.id ? styles.selected : ''}`}
+                  onClick={() => setSelectedId(c.id)}
+                >
+                  <span className={styles.campaignTitle}>{c.title}</span>
+                  <span className={styles.campaignDate}>
+                    {new Date(c.startDate).toLocaleDateString('vi-VN')} - {new Date(c.endDate).toLocaleDateString('vi-VN')}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.donateSection}>
+            <h3 className={styles.sectionTitle}>💳 Thông tin quyên góp</h3>
+            <div className={styles.donateForm}>
+              <div className={styles.formGroup}>
+                <label>Mô tả quyên góp</label>
+                <input
+                  type="text"
+                  placeholder="Nhập mô tả quyên góp của bạn..."
+                  className={styles.input}
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Số tiền (VNĐ)</label>
+                <input
+                  type="number"
+                  placeholder="Nhập số tiền quyên góp..."
+                  className={styles.input}
+                  value={amount > 0 ? amount : ''}
+                  onChange={e => setAmount(Number(e.target.value))}
+                  min={1}
+                />
+              </div>
               <button
-                key={c.id}
-                className={`${styles.campaignButton} ${selectedId === c.id ? styles.selected : ''}`}
-                onClick={() => setSelectedId(c.id)}
+                onClick={() => handleDonate()}
+                className={styles.donateButton}
+                disabled={!selectedId || amount <= 0}
               >
-                {c.title}
+                💝 Quyên góp ngay
               </button>
-            ))}
-          </div>
-
-          <div className={styles.form}>
-            <input
-              type="text"
-              placeholder="Nhập mô tả..."
-              className={styles.input}
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-            />
-            <input
-              type="number"
-              placeholder="Nhập số tiền (vnđ)"
-              className={styles.input}
-              value={amount > 0 ? amount : ''}
-              onChange={e => setAmount(Number(e.target.value))}
-              min={1}
-            />
-            <button
-              onClick={() => handleDonate()}
-              className={styles.donateButton}
-              disabled={!selectedId || amount <= 0}
-            >
-              Quyên góp ngay
-            </button>
+            </div>
           </div>
 
           {roleName === 'Staff' && (
-            <div style={{ display: 'flex', gap: 8, margin: '16px 0' }}>
-              <button className={styles.createButton} onClick={() => setShowCreate(true)}>
-                Tạo chiến dịch
-              </button>
-              <button
-                className={styles.editButton}
-                onClick={() => setShowEdit(true)}
-                disabled={!selected}
-              >
-                Chỉnh sửa chiến dịch
-              </button>
+            <div className={styles.staffSection}>
+              <h3 className={styles.sectionTitle}>⚙️ Quản lý chiến dịch</h3>
+              <div className={styles.staffActions}>
+                <button className={styles.createButton} onClick={() => setShowCreate(true)}>
+                  ➕ Tạo chiến dịch mới
+                </button>
+                <button
+                  className={styles.editButton}
+                  onClick={() => setShowEdit(true)}
+                  disabled={!selected}
+                >
+                  ✏️ Chỉnh sửa chiến dịch
+                </button>
+              </div>
             </div>
           )}
 
           {selected && (
-            <>
-              <div className={styles.progress}>
-                <p className={styles.progressText}>
-                  Progress: ${selected.raisedAmount.toLocaleString()} / {selected.targetAmount.toLocaleString()}
-                </p>
-                <div className={styles.progressBar}>
-                  <div
-                    className={styles.progressFill}
-                    style={{
-                      width: `${Math.min(100, (selected.raisedAmount / selected.targetAmount) * 100)}%`
-                    }}
-                  ></div>
+            <div className={styles.campaignDetails}>
+              <h3 className={styles.sectionTitle}>📊 Thông tin chiến dịch</h3>
+              <div className={styles.campaignCard}>
+                <div className={styles.campaignHeader}>
+                  <h4 className={styles.campaignName}>{selected.title}</h4>
+                  <div className={styles.campaignDates}>
+                    <span>📅 {new Date(selected.startDate).toLocaleDateString('vi-VN')} - {new Date(selected.endDate).toLocaleDateString('vi-VN')}</span>
+                  </div>
                 </div>
+                
+                <div className={styles.progressSection}>
+                  <div className={styles.progressInfo}>
+                    <span className={styles.progressText}>
+                      Đã quyên góp: {selected.raisedAmount.toLocaleString()} VNĐ
+                    </span>
+                    <span className={styles.targetText}>
+                      Mục tiêu: {selected.targetAmount.toLocaleString()} VNĐ
+                    </span>
+                  </div>
+                  <div className={styles.progressBar}>
+                    <div
+                      className={styles.progressFill}
+                      style={{
+                        width: `${Math.min(100, (selected.raisedAmount / selected.targetAmount) * 100)}%`
+                      }}
+                    ></div>
+                  </div>
+                  <div className={styles.progressPercentage}>
+                    {Math.round((selected.raisedAmount / selected.targetAmount) * 100)}%
+                  </div>
+                </div>
+                
+                <div className={styles.campaignDescription}>
+                  <p>{selected.description}</p>
+                </div>
+                
+                {selected.imageUrl && (
+                  <div className={styles.campaignImage}>
+                    <img src={selected.imageUrl} alt={selected.title} />
+                  </div>
+                )}
               </div>
-              <div className={styles.description}>{selected.description}</div>
-              {selected.imageUrl && (
-                <div style={{ textAlign: 'center', marginTop: 12 }}>
-                  <img src={selected.imageUrl} alt={selected.title} style={{ maxWidth: 200, borderRadius: 8 }} />
-                </div>
-              )}
-            </>
+            </div>
           )}
         </div>
       )}

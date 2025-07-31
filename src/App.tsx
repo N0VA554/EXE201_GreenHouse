@@ -17,6 +17,8 @@ import PaymentResponse from './components/PaymentResponse';
 import Users from './pages/Users';
 import Posts from './pages/Posts';
 import PostDetail from './pages/PostDetail';
+import Events from './pages/Events';
+import MyBookings from './pages/MyBookings';
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const roleName = localStorage.getItem('roleName');
@@ -55,6 +57,8 @@ const AppContent: React.FC = () => {
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/baiviet" element={<Posts />} />
         <Route path="/posts/:id" element={<PostDetail />} />
+        <Route path="/su-kien" element={<Events />} />
+        <Route path="/lich-dat" element={<MyBookings />} />
       </Routes>
       {!hideLayout && <Footer />}
     </>

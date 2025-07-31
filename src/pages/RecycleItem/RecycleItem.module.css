@@ -55,6 +55,78 @@
   resize: vertical;
 }
 
+/* ReactQuill Editor Styles */
+.quillEditor {
+  background: white !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+}
+
+.quillEditor .ql-container {
+  min-height: 200px !important;
+  max-height: 400px !important;
+  height: 400px !important;
+  overflow-y: auto !important;
+  font-size: 14px !important;
+}
+
+.quillEditor .ql-toolbar {
+  border-top-left-radius: 4px !important;
+  border-top-right-radius: 4px !important;
+  border-color: #ccc !important;
+}
+
+.quillEditor .ql-container {
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+  border-color: #ccc !important;
+}
+
+.quillEditor .ql-editor {
+  min-height: 200px !important;
+  max-height: 350px !important;
+  height: 350px !important;
+  overflow-y: auto !important;
+}
+
+.quillEditor .ql-editor:focus {
+  border-color: #44b15b !important;
+}
+
+/* Global CSS để ghi đè ReactQuill */
+:global(.quillEditor .ql-container) {
+  min-height: 200px !important;
+  max-height: 400px !important;
+  height: 400px !important;
+  overflow-y: auto !important;
+}
+
+:global(.quillEditor .ql-editor) {
+  min-height: 200px !important;
+  max-height: 350px !important;
+  height: 350px !important;
+  overflow-y: auto !important;
+}
+
+/* Thêm CSS với specificity cao nhất */
+:global(.quillEditor .ql-container.ql-snow) {
+  min-height: 200px !important;
+  max-height: 400px !important;
+  height: 400px !important;
+  overflow-y: auto !important;
+}
+
+:global(.quillEditor .ql-editor.ql-blank) {
+  min-height: 200px !important;
+  max-height: 350px !important;
+  height: 350px !important;
+  overflow-y: auto !important;
+}
+
+:global(.quillEditor .ql-editor p) {
+  margin: 0 !important;
+}
+
 .modalActions {
   display: flex;
   gap: 10px;
@@ -225,5 +297,17 @@
   
   .tabPanel {
     padding: 20px;
+  }
+  
+  .quillEditor .ql-container {
+    min-height: 150px !important;
+    max-height: 300px !important;
+    height: 300px !important;
+  }
+  
+  .quillEditor .ql-editor {
+    min-height: 150px !important;
+    max-height: 250px !important;
+    height: 250px !important;
   }
 }

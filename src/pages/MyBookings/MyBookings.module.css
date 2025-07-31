@@ -1,0 +1,355 @@
+.bookingsContainer {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.header {
+    background: linear-gradient(135deg, #44b15b 0%, #1b5e20 100%);
+    color: white;
+    padding: 100px 120px;
+    text-align: center;
+}
+
+.headerContent {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.backButton {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.backButton:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+.content {
+    padding: 60px 120px;
+}
+
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.loadingSpinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.emptyState {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.emptyIcon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.emptyState h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.emptyState p {
+    color: #7f8c8d;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.exploreButton {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.exploreButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.bookingsList {
+    display: grid;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.bookingCard {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e1e8ed;
+    display: flex;
+}
+
+.bookingCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.bookingImage {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    flex-shrink: 0;
+}
+
+.bookingImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.statusBadge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.statusBadge.confirmed {
+    background: rgba(46, 204, 113, 0.9);
+}
+
+.statusBadge.pending {
+    background: rgba(241, 196, 15, 0.9);
+}
+
+.statusBadge.cancelled {
+    background: rgba(231, 76, 60, 0.9);
+}
+
+.bookingContent {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.eventTitle {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    line-height: 1.3;
+}
+
+.bookingDetails {
+    margin-bottom: 20px;
+}
+
+.detailItem {
+    display: flex;
+    margin-bottom: 12px;
+    align-items: flex-start;
+}
+
+.detailLabel {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 120px;
+    margin-right: 15px;
+}
+
+.detailValue {
+    color: #7f8c8d;
+    flex: 1;
+}
+
+.bookingActions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.cancelButton {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.cancelButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.confirmedMessage {
+    color: #27ae60;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.cancelledMessage {
+    color: #e74c3c;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .header,
+    .content {
+        padding: 40px 60px;
+    }
+    
+    .title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .header,
+    .content {
+        padding: 30px 20px;
+    }
+    
+    .title {
+        font-size: 2rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .bookingCard {
+        flex-direction: column;
+    }
+    
+    .bookingImage {
+        width: 100%;
+        height: 200px;
+    }
+    
+    .bookingContent {
+        padding: 20px;
+    }
+    
+    .eventTitle {
+        font-size: 1.2rem;
+    }
+    
+    .detailItem {
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+    
+    .detailLabel {
+        min-width: auto;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    
+    .bookingActions {
+        justify-content: center;
+        margin-top: 15px;
+    }
+    
+    .emptyState {
+        margin: 20px;
+        padding: 40px 20px;
+    }
+    
+    .emptyState h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.8rem;
+    }
+    
+    .backButton {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .bookingContent {
+        padding: 15px;
+    }
+    
+    .eventTitle {
+        font-size: 1.1rem;
+    }
+    
+    .detailLabel,
+    .detailValue {
+        font-size: 0.9rem;
+    }
+    
+    .cancelButton {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+} 

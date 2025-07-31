@@ -1,0 +1,43 @@
+/* ReactQuill Global Override Styles */
+.quillEditor .ql-container {
+  min-height: 200px !important;
+  max-height: 400px !important;
+  height: 400px !important;
+  overflow-y: auto !important;
+}
+
+.quillEditor .ql-editor {
+  min-height: 200px !important;
+  max-height: 350px !important;
+  height: 350px !important;
+  overflow-y: auto !important;
+}
+
+.quillEditor .ql-container.ql-snow {
+  min-height: 200px !important;
+  max-height: 400px !important;
+  height: 400px !important;
+  overflow-y: auto !important;
+}
+
+.quillEditor .ql-editor.ql-blank {
+  min-height: 200px !important;
+  max-height: 350px !important;
+  height: 350px !important;
+  overflow-y: auto !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .quillEditor .ql-container {
+    min-height: 150px !important;
+    max-height: 300px !important;
+    height: 300px !important;
+  }
+  
+  .quillEditor .ql-editor {
+    min-height: 150px !important;
+    max-height: 250px !important;
+    height: 250px !important;
+  }
+}

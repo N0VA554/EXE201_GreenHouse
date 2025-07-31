@@ -8,6 +8,7 @@ import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import { getAuthHeader } from '../../utils/auth'; 
 
+
 interface BlogDetailData {
   id?: string;
   title: string;
@@ -47,6 +48,32 @@ const EditBlogModal: React.FC<{
       });
     }
   }, [data, open]);
+
+  // Force update CSS after ReactQuill renders
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        const quillContainers = document.querySelectorAll('.quillEditor .ql-container');
+        const quillEditors = document.querySelectorAll('.quillEditor .ql-editor');
+        
+        quillContainers.forEach((container: any) => {
+          container.style.minHeight = '200px';
+          container.style.maxHeight = '400px';
+          container.style.height = '400px';
+          container.style.overflowY = 'auto';
+        });
+        
+        quillEditors.forEach((editor: any) => {
+          editor.style.minHeight = '200px';
+          editor.style.maxHeight = '350px';
+          editor.style.height = '350px';
+          editor.style.overflowY = 'auto';
+        });
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   if (!open || !data) return null;
 
@@ -106,12 +133,15 @@ const EditBlogModal: React.FC<{
           </div>
           <div className={styles.formGroup}>
             <label>Nội dung (Richtext)</label>
-            <ReactQuill
-              theme="snow"
-              value={form.content}
-              onChange={value => setForm(f => ({ ...f, content: value }))}
-              style={{ background: 'white' }}
-            />
+            <div style={{ height: '400px' }}>
+              <ReactQuill
+                theme="snow"
+                value={form.content}
+                onChange={value => setForm(f => ({ ...f, content: value }))}
+                className={styles.quillEditor}
+                style={{ height: '350px' }}
+              />
+            </div>
           </div>
           <div className={styles.formGroup}>
             <label>URL hình ảnh</label>

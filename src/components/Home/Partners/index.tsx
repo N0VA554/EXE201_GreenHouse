@@ -42,7 +42,7 @@ const Partners: React.FC = () => {
     }, []);
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm('Bạn có chắc muốn xóa brand này?')) return;
+        if (!window.confirm('Bạn có chắc muốn xóa đối tác này?')) return;
         await axios.delete(`${API_URL}/brands/${id}`, getAuthHeader());
         fetchBrands();
     };
@@ -76,55 +76,93 @@ const Partners: React.FC = () => {
         setShowAddModal(false);
         fetchBrands();
     };
-const roleName = localStorage.getItem('roleName') || '';
+
+    const roleName = localStorage.getItem('roleName') || '';
+    
     return (
-        <div className={styles.partnersContainer}>
-            <h2 className={styles.title}>Thành viên & Đối tác</h2>
-            {roleName === 'Staff' && (
-            <div style={{ textAlign: 'right', marginBottom: 24 }}>
-                <button className={styles.button} onClick={() => setShowAddModal(true)}>
-                    Thêm Brand
-                </button>
+        <div className={styles.mainContent}>
+            <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>🤝 Thành Viên & Đối Tác</h2>
+                <p className={styles.sectionSubtitle}>
+                    Những đối tác tin cậy đồng hành cùng chúng tôi trong hành trình bảo vệ môi trường
+                </p>
             </div>
+
+            {roleName === 'Staff' && (
+                <div className={styles.staffSection}>
+                    <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
+                        ➕ Thêm đối tác mới
+                    </button>
+                </div>
             )}
-            <div className={styles.grid}>
+
+            <div className={styles.partnersGrid}>
                 {brands.map(brand =>
                     editingId === brand.id && editBrand ? (
                         <div key={brand.id} className={styles.partnerCard}>
-                            <input
-                                className={styles.input}
-                                name="name"
-                                value={editBrand.name}
-                                onChange={handleEditChange}
-                                placeholder="Tên"
-                            />
-                            <input
-                                className={styles.input}
-                                name="logoUrl"
-                                value={editBrand.logoUrl}
-                                onChange={handleEditChange}
-                                placeholder="Logo URL"
-                            />
-                            <input
-                                className={styles.input}
-                                name="websiteUrl"
-                                value={editBrand.websiteUrl}
-                                onChange={handleEditChange}
-                                placeholder="Website URL"
-                            />
-                            <textarea
-                                className={styles.input}
-                                name="description"
-                                value={editBrand.description}
-                                onChange={handleEditChange}
-                                placeholder="Mô tả"
-                            />
-                            {roleName === 'Staff' && (
-                            <div>
-                                <button className={styles.button} onClick={handleEditSave}>Lưu</button>
-                                <button className={styles.button} onClick={() => setEditingId(null)}>Hủy</button>
+                            <div className={styles.editForm}>
+                                <div className={styles.formGroup}>
+                                    <label>ID *</label>
+                                    <input
+                                        className={styles.input}
+                                        name="id"
+                                        value={editBrand.id}
+                                        onChange={handleEditChange}
+                                        placeholder="Nhập ID..."
+                                    />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Tên đối tác *</label>
+                                    <input
+                                        className={styles.input}
+                                        name="name"
+                                        value={editBrand.name}
+                                        onChange={handleEditChange}
+                                        placeholder="Nhập tên đối tác..."
+                                    />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Logo URL *</label>
+                                    <input
+                                        className={styles.input}
+                                        name="logoUrl"
+                                        value={editBrand.logoUrl}
+                                        onChange={handleEditChange}
+                                        placeholder="Nhập URL logo..."
+                                    />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Website URL</label>
+                                    <input
+                                        className={styles.input}
+                                        name="websiteUrl"
+                                        value={editBrand.websiteUrl}
+                                        onChange={handleEditChange}
+                                        placeholder="Nhập URL website..."
+                                    />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Mô tả</label>
+                                    <textarea
+                                        className={styles.textarea}
+                                        name="description"
+                                        value={editBrand.description}
+                                        onChange={handleEditChange}
+                                        placeholder="Nhập mô tả..."
+                                        rows={3}
+                                    />
+                                </div>
+                                {roleName === 'Staff' && (
+                                    <div className={styles.editActions}>
+                                        <button className={styles.saveButton} onClick={handleEditSave}>
+                                            💾 Lưu thay đổi
+                                        </button>
+                                        <button className={styles.cancelButton} onClick={() => setEditingId(null)}>
+                                            Hủy
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                            )}
                         </div>
                     ) : (
                         <div key={brand.id} className={styles.partnerCard}>
@@ -132,69 +170,117 @@ const roleName = localStorage.getItem('roleName') || '';
                                 href={brand.websiteUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}
+                                className={styles.partnerLink}
                             >
                                 <div className={styles.logoWrapper}>
                                     <img src={brand.logoUrl} alt={brand.name} className={styles.logo} />
                                 </div>
-                                <div className={styles.info}>
-                                    <h3>{brand.name}</h3>
-                                    <p>{brand.description}</p>
+                                <div className={styles.partnerInfo}>
+                                    <h3 className={styles.partnerName}>{brand.name}</h3>
+                                    <p className={styles.partnerDescription}>{brand.description}</p>
                                 </div>
                             </a>
                             {roleName === 'Staff' && (
-                            <div style={{ marginTop: 12 }}>
-                                <button className={styles.button} onClick={() => handleEdit(brand)}>Sửa</button>
-                                <button className={styles.button} onClick={() => handleDelete(brand.id)}>Xóa</button>
-                            </div>
+                                <div className={styles.partnerActions}>
+                                    <button className={styles.editButton} onClick={() => handleEdit(brand)}>
+                                        ✏️ Chỉnh sửa
+                                    </button>
+                                    <button className={styles.deleteButton} onClick={() => handleDelete(brand.id)}>
+                                        🗑️ Xóa
+                                    </button>
+                                </div>
                             )}
                         </div>
                     )
                 )}
             </div>
+
+            {brands.length === 0 && (
+                <div className={styles.emptyState}>
+                    <div className={styles.emptyIcon}>🤝</div>
+                    <h3>Chưa có đối tác nào</h3>
+                    <p>Hãy thêm đối tác đầu tiên để bắt đầu hợp tác!</p>
+                    {roleName === 'Staff' && (
+                        <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
+                            ➕ Thêm đối tác đầu tiên
+                        </button>
+                    )}
+                </div>
+            )}
+
             {showAddModal && roleName === 'Staff' && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modal}>
-                        <h3>Thêm Brand mới</h3>
-                        <input
-                            className={styles.input}
-                            name="id"
-                            placeholder="ID"
-                            value={newBrand.id}
-                            onChange={handleAddChange}
-                        />
-                        <input
-                            className={styles.input}
-                            name="name"
-                            placeholder="Tên"
-                            value={newBrand.name}
-                            onChange={handleAddChange}
-                        />
-                        <input
-                            className={styles.input}
-                            name="logoUrl"
-                            placeholder="Logo URL"
-                            value={newBrand.logoUrl}
-                            onChange={handleAddChange}
-                        />
-                        <input
-                            className={styles.input}
-                            name="websiteUrl"
-                            placeholder="Website URL"
-                            value={newBrand.websiteUrl}
-                            onChange={handleAddChange}
-                        />
-                        <textarea
-                            className={styles.input}
-                            name="description"
-                            placeholder="Mô tả"
-                            value={newBrand.description}
-                            onChange={handleAddChange}
-                        />
-                        <div style={{ marginTop: 12 }}>
-                            <button className={styles.button} onClick={handleAdd}>Thêm</button>
-                            <button className={styles.button} onClick={() => setShowAddModal(false)}>Đóng</button>
+                <div className={styles.modal}>
+                    <div className={styles.modalContent}>
+                        <div className={styles.modalHeader}>
+                            <h3>➕ Thêm đối tác mới</h3>
+                            <button 
+                                className={styles.closeButton}
+                                onClick={() => setShowAddModal(false)}
+                            >
+                                ×
+                            </button>
                         </div>
+                        <form className={styles.modalForm}>
+                            <div className={styles.formGroup}>
+                                <label>ID *</label>
+                                <input
+                                    className={styles.input}
+                                    name="id"
+                                    placeholder="Nhập ID đối tác..."
+                                    value={newBrand.id}
+                                    onChange={handleAddChange}
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Tên đối tác *</label>
+                                <input
+                                    className={styles.input}
+                                    name="name"
+                                    placeholder="Nhập tên đối tác..."
+                                    value={newBrand.name}
+                                    onChange={handleAddChange}
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Logo URL *</label>
+                                <input
+                                    className={styles.input}
+                                    name="logoUrl"
+                                    placeholder="Nhập URL logo..."
+                                    value={newBrand.logoUrl}
+                                    onChange={handleAddChange}
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Website URL</label>
+                                <input
+                                    className={styles.input}
+                                    name="websiteUrl"
+                                    placeholder="Nhập URL website..."
+                                    value={newBrand.websiteUrl}
+                                    onChange={handleAddChange}
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Mô tả</label>
+                                <textarea
+                                    className={styles.textarea}
+                                    name="description"
+                                    placeholder="Nhập mô tả đối tác..."
+                                    value={newBrand.description}
+                                    onChange={handleAddChange}
+                                    rows={3}
+                                />
+                            </div>
+                            <div className={styles.modalActions}>
+                                <button className={styles.addButton} onClick={handleAdd}>
+                                    ➕ Thêm đối tác
+                                </button>
+                                <button className={styles.cancelButton} onClick={() => setShowAddModal(false)}>
+                                    Hủy
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
