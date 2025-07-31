@@ -3,13 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getAuthHeader } from '../../utils/auth';
 import styles from './PostDetail.module.css';
+import MiniCarousel from '../../components/MiniCarousel';
 
 interface Post {
   id: string;
   title: string;
   content: string;
   fileUrl: string;
-  // videoUrl: string;
   authorId: string;
   status: string;
   authorName: string;
@@ -20,7 +20,6 @@ interface EditForm {
   title: string;
   content: string;
   fileUrl: string;
-  // videoUrl: string;
 }
 
 const PostDetail: React.FC = () => {
@@ -33,16 +32,11 @@ const PostDetail: React.FC = () => {
   const [editForm, setEditForm] = useState<EditForm>({
     title: '',
     content: '',
-    // imageUrl: '',
     fileUrl: ''
   });
   const [submitting, setSubmitting] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string>('');
-  // const [imageFile, setImageFile] = useState<File | null>(null);
-  // const [videoFile, setVideoFile] = useState<File | null>(null);
-  // const [imagePreview, setImagePreview] = useState<string>('');
-  // const [videoPreview, setVideoPreview] = useState<string>('');
 
   const userId = localStorage.getItem('userId') || JSON.parse(localStorage.getItem('user') || '{}').id;
   const username = localStorage.getItem('username') || JSON.parse(localStorage.getItem('user') || '{}').fullName || 'Anonymous';
@@ -73,7 +67,6 @@ const PostDetail: React.FC = () => {
     setEditForm({
       title: post.title,
       content: post.content,
-      // imageUrl: post.imageUrl || '',
       fileUrl: post.fileUrl || ''
     });
     setIsEditing(true);
@@ -95,29 +88,10 @@ const PostDetail: React.FC = () => {
       formData.append('authorId', userId);
       formData.append('authorName', username);
 
-      // if (imageFile) {
-      //   formData.append('imageFile', imageFile);
-      // }
-      // if (videoFile) {
-      //   formData.append('videoFile', videoFile);
-      // }
       if (file) {
         formData.append('file', file);
       }
 
-      // console.log('Sending update formData:', {
-      //   id: post?.id,
-      //   title: editForm.title.trim(),
-      //   content: editForm.content.trim(),
-      //   authorId: userId,
-      //   authorName: username,
-      //   hasImage: !!imageFile,
-      //   hasVideo: !!videoFile,
-      //   imageName: imageFile?.name,
-      //   videoName: videoFile?.name
-      // });
-
-      // Log FormData contents for debugging
       formData.forEach((value, key) => {
         console.log(`${key}:`, value instanceof File ? `File: ${value.name} (${value.size} bytes)` : value);
       });
@@ -130,7 +104,7 @@ const PostDetail: React.FC = () => {
             ...getAuthHeader(),
             'Content-Type': 'multipart/form-data',
           },
-          timeout: 60000, // 60 seconds timeout
+          timeout: 60000,
         }
       );
 
@@ -140,18 +114,8 @@ const PostDetail: React.FC = () => {
       if (filePreview) {
         URL.revokeObjectURL(filePreview);
       }
-      // if (imagePreview) {
-      //   URL.revokeObjectURL(imagePreview);
-      // }
-      // if (videoPreview) {
-      //   URL.revokeObjectURL(videoPreview);
-      // }
       setFile(null);
       setFilePreview('');
-      // setImageFile(null);
-      // setVideoFile(null);
-      // setImagePreview('');
-      // setVideoPreview('');
       fetchPost();
     } catch (error: any) {
       console.error('Error updating post:', error);
@@ -190,33 +154,21 @@ const PostDetail: React.FC = () => {
     if (filePreview) {
       URL.revokeObjectURL(filePreview);
     }
-    // if (imagePreview) {
-    //   URL.revokeObjectURL(imagePreview);
-    // }
-    // if (videoPreview) {
-    //   URL.revokeObjectURL(videoPreview);
-    // }
     setFile(null);
     setFilePreview('');
-    // setImageFile(null);
-    // setVideoFile(null);
-    // setImagePreview('');
-    // setVideoPreview('');
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type
       if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
         alert('Vui lòng chọn file hợp lệ (JPG, PNG, GIF, MP4, MOV, etc.)');
         return;
       }
 
-      // Validate file size (5MB limit)
       if (file.type.startsWith('video/')) {
         if (file.size > 100 * 1024 * 1024) {
-          alert('Kích thước file ảnh không được vượt quá 100MB');
+          alert('Kích thước file video không được vượt quá 100MB');
           return;
         }
       } else if (file.type.startsWith('image/')) {
@@ -226,14 +178,13 @@ const PostDetail: React.FC = () => {
         }
       }
 
-      // Remove previous image if exists
       if (filePreview) {
         URL.revokeObjectURL(filePreview);
       }
 
       setFile(file);
       setFilePreview(URL.createObjectURL(file));
-      console.log('Image selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+      console.log('File selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
     }
   };
 
@@ -248,7 +199,7 @@ const PostDetail: React.FC = () => {
   const isVideo = (url: string) => {
     try {
       const decoded = decodeURIComponent(url);
-      const pathWithoutQuery = decoded.split('?')[0]; // bỏ phần ?token
+      const pathWithoutQuery = decoded.split('?')[0];
       return /\.(mp4|webm|ogg)$/i.test(pathWithoutQuery);
     } catch {
       return false;
@@ -258,76 +209,27 @@ const PostDetail: React.FC = () => {
   const isImage = (url: string) => {
     try {
       const decoded = decodeURIComponent(url);
-      const pathWithoutQuery = decoded.split('?')[0]; // bỏ phần ?token
+      const pathWithoutQuery = decoded.split('?')[0];
       return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(pathWithoutQuery);
     } catch {
       return false;
     }
   };
 
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     if (file.size > 5 * 1024 * 1024) { // 5MB limit
-  //       alert('Kích thước file ảnh không được vượt quá 5MB');
-  //       return;
-  //     }
-  //     if (!file.type.startsWith('image/')) {
-  //       alert('Vui lòng chọn file ảnh hợp lệ');
-  //       return;
-  //     }
-  //     setImageFile(file);
-  //     setImagePreview(URL.createObjectURL(file));
-  //   }
-  // };
-
-  // const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     if (file.size > 50 * 1024 * 1024) { // 50MB limit
-  //       alert('Kích thước file video không được vượt quá 50MB');
-  //       return;
-  //     }
-  //     if (!file.type.startsWith('video/')) {
-  //       alert('Vui lòng chọn file video hợp lệ');
-  //       return;
-  //     }
-  //     setVideoFile(file);
-  //     setVideoPreview(URL.createObjectURL(file));
-  //   }
-  // };
-
-  // const removeImage = () => {
-  //   if (imagePreview) {
-  //     URL.revokeObjectURL(imagePreview);
-  //   }
-  //   setImageFile(null);
-  //   setImagePreview('');
-  // };
-
-  // const removeVideo = () => {
-  //   if (videoPreview) {
-  //     URL.revokeObjectURL(videoPreview);
-  //   }
-  //   setVideoFile(null);
-  //   setVideoPreview('');
-  // };
-
   if (loading) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loading}>
-          <div className={styles.spinner}></div>
-          <p>Đang tải bài viết...</p>
-        </div>
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Đang tải bài viết...</p>
       </div>
     );
   }
 
   if (error || !post) {
     return (
-      <div className={styles.container}>
-        <div className={styles.error}>
+      <div className={styles.errorContainer}>
+        <div className={styles.errorContent}>
+          <div className={styles.errorIcon}>❌</div>
           <h2>Không tìm thấy bài viết</h2>
           <p>{error || 'Bài viết không tồn tại hoặc đã bị xóa.'}</p>
           <button className={styles.backButton} onClick={() => navigate('/baiviet')}>
@@ -339,208 +241,175 @@ const PostDetail: React.FC = () => {
   }
 
   return (
-    <div className={styles.container}>
-      {/* Header with back button and edit/delete actions */}
-      <div className={styles.header}>
-        <button className={styles.backButton} onClick={() => navigate('/baiviet')}>
-          ← Quay lại
-        </button>
-        {post.authorId === userId && (
-          <div className={styles.actions}>
-            <button
-              className={styles.editButton}
-              onClick={handleEdit}
-            >
-              ✏️ Sửa
-            </button>
-            <button
-              className={styles.deleteButton}
-              onClick={handleDelete}
-            >
-              🗑️ Xóa
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Post Content / Edit Form */}
-      <div className={styles.postContainer}>
-        {isEditing ? (
-          <form onSubmit={handleSave} className={styles.editForm}>
-            <div className={styles.formGroup}>
-              <label>Tiêu đề *</label>
-              <input
-                type="text"
-                value={editForm.title}
-                onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                className={styles.input}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Nội dung *</label>
-              <textarea
-                value={editForm.content}
-                onChange={(e) => setEditForm({ ...editForm, content: e.target.value })}
-                className={styles.textarea}
-                rows={12}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>File (tùy chọn)</label>
-              <input
-                type="file"
-                accept="image/*,video/*"
-                onChange={handleFileChange}
-                className={styles.fileInput}
-              />
-              {filePreview && (
-                <div className={styles.filePreview}>
-                  <img src={filePreview} alt="Preview" className={styles.previewImage} />
-                  <div className={styles.imagePreviewInfo}>
-                    <span>📷 file đã chọn: {file?.name}</span>
-                    <span className={styles.fileSize}>
-                      ({((file?.size || 0) / 1024 / 1024).toFixed(2)} MB)
-                    </span>
-                  </div>
-                  <button type="button" onClick={removeFile} className={styles.removeButton}>
-                    ✕ Xóa file
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* <div className={styles.formGroup}>
-              <label>Hình ảnh (tùy chọn)</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className={styles.fileInput}
-              />
-              {imagePreview && (
-                <div className={styles.filePreview}>
-                  <img src={imagePreview} alt="Preview" className={styles.previewImage} />
-                  <div className={styles.imagePreviewInfo}>
-                    <span>📷 Ảnh đã chọn: {imageFile?.name}</span>
-                    <span className={styles.fileSize}>
-                      ({(imageFile?.size || 0 / 1024 / 1024).toFixed(2)} MB)
-                    </span>
-                  </div>
-                  <button type="button" onClick={removeImage} className={styles.removeButton}>
-                    ✕ Xóa ảnh
-                  </button>
-                </div>
-              )}
-            </div> */}
-
-            {/* <div className={styles.formGroup}>
-              <label>Video (tùy chọn)</label>
-              <input
-                type="file"
-                accept="video/*"
-                onChange={handleVideoChange}
-                className={styles.fileInput}
-              />
-              {videoPreview && (
-                <div className={styles.filePreview}>
-                  <div className={styles.videoPreviewInfo}>
-                    <span>📹 Video đã chọn: {videoFile?.name}</span>
-                    <span className={styles.fileSize}>
-                      ({(videoFile?.size || 0 / 1024 / 1024).toFixed(2)} MB)
-                    </span>
-                  </div>
-                  <button type="button" onClick={removeVideo} className={styles.removeButton}>
-                    ✕ Xóa video
-                  </button>
-                </div>
-              )}
-            </div> */}
-
-            <div className={styles.formActions}>
+    <>
+      <MiniCarousel />
+      <div className={styles.mainContent}>
+        {/* Header with back button and edit/delete actions */}
+        <div className={styles.header}>
+          <button className={styles.backButton} onClick={() => navigate('/baiviet')}>
+            ← Quay lại danh sách bài viết
+          </button>
+          {post.authorId === userId && (
+            <div className={styles.actions}>
               <button
-                type="submit"
-                className={styles.saveButton}
-                disabled={submitting}
+                className={styles.editButton}
+                onClick={handleEdit}
               >
-                {submitting ? '🔄 Đang lưu thay đổi...' : 'Lưu thay đổi'}
+                ✏️ Chỉnh sửa
               </button>
               <button
-                type="button"
-                className={styles.cancelButton}
-                onClick={handleCancel}
-                disabled={submitting}
+                className={styles.deleteButton}
+                onClick={handleDelete}
               >
-                Hủy
+                🗑️ Xóa bài viết
               </button>
             </div>
-          </form>
-        ) : (
-          <>
-            <div className={styles.postHeader}>
-              <h1 className={styles.postTitle}>{post.title}</h1>
-              <div className={styles.postMeta}>
-                <span className={styles.postAuthor}>👤 {post.authorName}</span>
-                {post.createdTime && (
-                  <span className={styles.postDate}>
-                    📅 {new Date(post.createdTime).toLocaleDateString('vi-VN', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </span>
-                )}
-                <span className={styles.postStatus}>
-                  {post.status === 'Published' ? '✅ Đã xuất bản' : '⏳ Chờ duyệt'}
-                </span>
+          )}
+        </div>
+
+        {/* Post Content / Edit Form */}
+        <div className={styles.postContainer}>
+          {isEditing ? (
+            <div className={styles.editFormContainer}>
+              <div className={styles.editFormHeader}>
+                <h2>✏️ Chỉnh sửa bài viết</h2>
+                <p>Cập nhật thông tin bài viết của bạn</p>
               </div>
+              <form onSubmit={handleSave} className={styles.editForm}>
+                <div className={styles.formGroup}>
+                  <label>Tiêu đề *</label>
+                  <input
+                    type="text"
+                    value={editForm.title}
+                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                    className={styles.input}
+                    required
+                    placeholder="Nhập tiêu đề bài viết..."
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Nội dung *</label>
+                  <textarea
+                    value={editForm.content}
+                    onChange={(e) => setEditForm({ ...editForm, content: e.target.value })}
+                    className={styles.textarea}
+                    rows={12}
+                    required
+                    placeholder="Nhập nội dung bài viết..."
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>File (tùy chọn)</label>
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    onChange={handleFileChange}
+                    className={styles.fileInput}
+                  />
+                  {filePreview && (
+                    <div className={styles.filePreview}>
+                      <img src={filePreview} alt="Preview" className={styles.previewImage} />
+                      <div className={styles.imagePreviewInfo}>
+                        <span>📷 File đã chọn: {file?.name}</span>
+                        <span className={styles.fileSize}>
+                          ({((file?.size || 0) / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                      </div>
+                      <button type="button" onClick={removeFile} className={styles.removeButton}>
+                        ✕ Xóa file
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.formActions}>
+                  <button
+                    type="submit"
+                    className={styles.saveButton}
+                    disabled={submitting}
+                  >
+                    {submitting ? '🔄 Đang lưu thay đổi...' : '💾 Lưu thay đổi'}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={handleCancel}
+                    disabled={submitting}
+                  >
+                    Hủy
+                  </button>
+                </div>
+              </form>
             </div>
-
-            {post.fileUrl && isImage(post.fileUrl) && (
-              <div className={styles.postImage}>
-                <img src={post.fileUrl} alt={post.title} />
-              </div>
-            )}
-
-            {post.fileUrl && isVideo(post.fileUrl) && (
-              <div className={styles.postVideo}>
-                <video controls className={styles.videoPlayer}>
-                  <source src={post.fileUrl} />
-                  Trình duyệt của bạn không hỗ trợ video.
-                </video>
-              </div>
-            )}
-
-            {/* {post.imageUrl && (
-              <div className={styles.postImage}>
-                <img src={post.imageUrl} alt={post.title} />
-              </div>
-            )}
-
-            {post.videoUrl && (
-              <div className={styles.postVideo}>
-                <video controls className={styles.videoPlayer}>
-                  <source src={post.videoUrl} />
-                  Trình duyệt của bạn không hỗ trợ video.
-                </video>
-              </div>
-            )} */}
-
+          ) : (
             <div className={styles.postContent}>
-              <div
-                className={styles.contentText}
-                dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br>') }}
-              />
+              {/* Post Header */}
+              <div className={styles.postHeader}>
+                <div className={styles.postMeta}>
+                  <span className={styles.postCategory}>📰 Bài Viết Cộng Đồng</span>
+                  {post.createdTime && (
+                    <span className={styles.postDate}>
+                      📅 {new Date(post.createdTime).toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </span>
+                  )}
+                </div>
+                <h1 className={styles.postTitle}>{post.title}</h1>
+                <div className={styles.postAuthor}>
+                  <div className={styles.authorAvatar}>
+                    <span>👤</span>
+                  </div>
+                  <div className={styles.authorInfo}>
+                    <span className={styles.authorName}>{post.authorName}</span>
+                    <span className={styles.authorRole}>Tác giả</span>
+                  </div>
+                  {post.authorId === userId && (
+                    <div className={styles.postStatus}>
+                      {post.status === 'Approved' ? '✅ Đã duyệt' : 
+                       post.status === 'Pending' ? '⏳ Chờ duyệt' : 
+                       post.status === 'Rejected' ? '❌ Bị từ chối' : 
+                       '❓ Không xác định'}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Post Media */}
+              {post.fileUrl && isImage(post.fileUrl) && (
+                <div className={styles.postImage}>
+                  <div className={styles.imageWrapper}>
+                    <img src={post.fileUrl} alt={post.title} />
+                    <div className={styles.imageOverlay}></div>
+                  </div>
+                </div>
+              )}
+
+              {post.fileUrl && isVideo(post.fileUrl) && (
+                <div className={styles.postVideo}>
+                  <video controls className={styles.videoPlayer}>
+                    <source src={post.fileUrl} />
+                    Trình duyệt của bạn không hỗ trợ video.
+                  </video>
+                </div>
+              )}
+
+              {/* Post Content */}
+              <div className={styles.contentSection}>
+                <div
+                  className={styles.contentText}
+                  dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br>') }}
+                />
+              </div>
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

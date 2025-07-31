@@ -124,69 +124,102 @@ const Media: React.FC = () => {
 
     return (
         <div className={styles.mediaContainer}>
-            <div className={styles.header}>
-                <h2>TRUYỀN THÔNG</h2>
-                <div className={styles.tabs}>
-                    {categories.map(cat => (
-                        <span
-                            key={cat.id}
-                            className={selectedCategory === cat.id ? styles.active : ''}
-                            onClick={() => setSelectedCategory(cat.id)}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            {cat.name}
-                        </span>
-                    ))}
+            {/* Main Content */}
+            <div className={styles.mainContent}>
+                <div className={styles.sectionHeader}>
+                    <h2 className={styles.sectionTitle}>Truyền Thông</h2>
+                    <p className={styles.sectionSubtitle}>
+                        Khám phá những bài viết mới nhất về môi trường và tái chế
+                    </p>
                     {roleName === 'Staff' && (
-                        <button
-                            className={styles.addBlogButton}
-                            onClick={() => setShowAddBlog(true)}
-                        >
-                            Thêm bài viết
-                        </button>
+                        <div className={styles.staffButtons}>
+                            <button
+                                className={styles.primaryButton}
+                                onClick={() => setShowAddBlog(true)}
+                            >
+                                Thêm bài viết
+                            </button>
+                        </div>
                     )}
                 </div>
-            </div>
-            <div className={styles.mediaList}>
-                <Slider ref={sliderRef} {...settings}>
-                    {mediaItems.map((item) => (
+
+                {/* Category Tabs */}
+                <div className={styles.categoryTabs}>
+                    {categories.map(cat => (
                         <div
-                            key={item.id}
-                            className={styles.mediaItem}
-                            onClick={() => navigate(`/blog/${item.id}`)}
-                            style={{ cursor: 'pointer' }}
+                            key={cat.id}
+                            className={`${styles.categoryTab} ${selectedCategory === cat.id ? styles.active : ''}`}
+                            onClick={() => setSelectedCategory(cat.id)}
                         >
-                            <div className={styles.mediaImageWrap}>
-                                <img src={item.image} alt={item.title} className={styles.mediaImage} />
-                            </div>
-                            <div className={styles.mediaContent}>
-                                <span className={styles.category}>
-                                    {categories.find(c => c.id === selectedCategory)?.name || ''}
-                                </span>
-                                <h3 className={styles.mediaItemTitle}>{item.title}</h3>
-                                <div className={styles.mediaDesc}>
-                                    {getShortDescription(item.description)}
-                                </div>
-                                <div className={styles.mediaFooter}>
-                                    <span className={styles.date}>{item.date}</span>
-                                    <span className={styles.arrow}>→</span>
-                                </div>
-                            </div>
+                            <span className={styles.categoryName}>{cat.name}</span>
                         </div>
                     ))}
-                </Slider>
+                </div>
+
+                {/* Media Carousel */}
+                <div className={styles.mediaCarousel}>
+                    <Slider ref={sliderRef} {...settings}>
+                        {mediaItems.map((item) => (
+                            <div key={item.id}>
+                                <div
+                                    className={styles.mediaCard}
+                                    onClick={() => navigate(`/blog/${item.id}`)}
+                                >
+                                    <div className={styles.mediaImageWrapper}>
+                                        <img src={item.image} alt={item.title} className={styles.mediaImage} />
+                                        <div className={styles.mediaOverlay}>
+                                            <span className={styles.readMore}>Đọc thêm</span>
+                                        </div>
+                                    </div>
+                                    <div className={styles.mediaContent}>
+                                        <div className={styles.mediaHeader}>
+                                            <span className={styles.category}>
+                                                {categories.find(c => c.id === selectedCategory)?.name || ''}
+                                            </span>
+                                            <span className={styles.date}>{item.date}</span>
+                                        </div>
+                                        <h3 className={styles.mediaTitle}>{item.title}</h3>
+                                        <p className={styles.mediaDescription}>
+                                            {getShortDescription(item.description)}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </Slider>
+                </div>
+
+                {/* Navigation Controls */}
+                <div className={styles.carouselControls}>
+                    <button className={styles.navButton} onClick={handlePrev}>
+                        ←
+                    </button>
+                    <div className={styles.dots}>
+                        {mediaItems.map((_, index) => (
+                            <span
+                                key={index}
+                                className={`${styles.dot} ${currentIndex === index ? styles.active : ''}`}
+                                onClick={() => sliderRef.current?.slickGoTo(index)}
+                            />
+                        ))}
+                    </div>
+                    <button className={styles.navButton} onClick={handleNext}>
+                        →
+                    </button>
+                </div>
+
+                {/* View All Link */}
+                <div className={styles.viewAllSection}>
+                    {/* <button 
+                        className={styles.viewAllButton}
+                        onClick={() => navigate('/baiviet')}
+                    >
+                        Xem tất cả bài viết →
+                    </button> */}
+                </div>
             </div>
-            <div className={styles.navigation}>
-                <button className={styles.navButton} onClick={handlePrev}>
-                    ←
-                </button>
-                <button className={styles.navButton} onClick={handleNext}>
-                    →
-                </button>
-            </div>
-            <div className={styles.viewAll}>
-                <a href="#view-all">XEM TẤT CẢ →</a>
-            </div>
+
+            {/* Add Blog Modal */}
             {showAddBlog && selectedCategory && (
                 <AddBlog
                     blogTypeId={selectedCategory}

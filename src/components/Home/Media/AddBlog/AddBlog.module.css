@@ -66,30 +66,40 @@
 }
 
 .quillEditor {
-  background: white;
-  border: 1px solid #44b15b;
-  border-radius: 5px;
+  background: white !important;
+  border: 1px solid #44b15b !important;
+  border-radius: 5px !important;
 }
 
 .quillEditor .ql-container {
-  min-height: 150px;
-  font-size: 14px;
+  min-height: 200px !important;
+  max-height: 400px !important;
+  height: 400px !important;
+  overflow-y: auto !important;
+  font-size: 14px !important;
 }
 
 .quillEditor .ql-toolbar {
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-color: #44b15b;
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
+  border-color: #44b15b !important;
 }
 
 .quillEditor .ql-container {
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-color: #44b15b;
+  border-bottom-left-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+  border-color: #44b15b !important;
+}
+
+.quillEditor .ql-editor {
+  min-height: 200px !important;
+  max-height: 350px !important;
+  height: 350px !important;
+  overflow-y: auto !important;
 }
 
 .quillEditor .ql-editor:focus {
-  border-color: #358e49;
+  border-color: #358e49 !important;
 }
 
 .buttonGroup {
@@ -148,7 +158,16 @@
   }
 
   .quillEditor .ql-container {
-    font-size: 12px;
+    font-size: 12px !important;
+    min-height: 150px !important;
+    max-height: 300px !important;
+    height: 300px !important;
+  }
+  
+  .quillEditor .ql-editor {
+    min-height: 150px !important;
+    max-height: 250px !important;
+    height: 250px !important;
   }
 
   .cancelButton,

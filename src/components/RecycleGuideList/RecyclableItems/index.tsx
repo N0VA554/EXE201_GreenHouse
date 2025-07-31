@@ -34,6 +34,7 @@ const RecyclableItems: React.FC = () => {
     iconUrl: ''
   });
   const roleName = localStorage.getItem('roleName');
+  
   const getAuthHeaders = () => {
     const token = localStorage.getItem('accessToken');
     return token ? { Authorization: `Bearer ${token}` } : {};
@@ -137,7 +138,6 @@ const RecyclableItems: React.FC = () => {
         setShowEditWasteType(false);
         setWasteTypeForm({ id: '', typeName: '', description: '', iconUrl: '' });
 
-        // Nếu loại rác bị xóa đang được chọn, đặt lại selected
         if (selectedWasteTypeId === wasteTypeForm.id) {
           setSelectedWasteTypeId(null);
         }
@@ -147,74 +147,124 @@ const RecyclableItems: React.FC = () => {
 
   return (
     <div className={styles.recyclableItemsContainer}>
-      <div className={styles.header}>
-        <h2 className={styles.title}>NHỮNG GÌ CÓ THỂ ĐƯỢC TÁI CHẾ?</h2>
-        {roleName === 'Staff' && (
-          <div className={styles.buttonGroup}>
+      {/* Main Content */}
+      <div className={styles.mainContent}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Phân Loại Rác Thải</h2>
+          <p className={styles.sectionSubtitle}>
+            Chọn loại rác thải để xem các vật dụng có thể tái chế
+          </p>
+          {roleName === 'Staff' && (
+            <div className={styles.staffButtons}>
+              <button
+                className={styles.primaryButton}
+                onClick={() => setShowAddGuide(true)}
+              >
+                Thêm hướng dẫn tái chế
+              </button>
+              <button
+                className={styles.secondaryButton}
+                onClick={handleAddWasteTypeClick}
+              >
+                Thêm loại rác thải
+              </button>
+            </div>
+          )}
+        </div>
 
-            <button
-              className={styles.addGuideButton}
-              onClick={() => setShowAddGuide(true)}
+        {/* Waste Types Bar */}
+        <div className={styles.wasteTypesBar}>
+          {wasteTypes.map((type) => (
+            <div
+              key={type.id}
+              className={`${styles.wasteTypeItem} ${selectedWasteTypeId === type.id ? styles.active : ''}`}
+              onClick={() => handleWasteTypeClick(type.id)}
             >
-              Thêm hướng dẫn tái chế
-            </button>
+              <img src={type.iconUrl} alt={type.typeName} className={styles.wasteTypeIcon} />
+              <span className={styles.wasteTypeName}>{type.typeName}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Staff Actions */}
+        {roleName === 'Staff' && selectedWasteTypeId && (
+          <div className={styles.staffActions}>
             <button
-              className={styles.addWasteTypeButton}
-              onClick={handleAddWasteTypeClick}
-            >
-              Thêm loại rác thải
-            </button>
-            <button
-              className={styles.editWasteTypeButton}
+              className={styles.editButton}
               onClick={handleEditWasteTypeClick}
-              disabled={!selectedWasteTypeId}
             >
-              Chỉnh sửa loại rác thải
+              ✏️ Chỉnh sửa loại rác thải
             </button>
           </div>
         )}
-      </div>
-      <p className={styles.subtitle}>
-        Theo hướng dẫn trong sạch mà GREENHOME chúng tôi cung cấp :
-      </p>
-      <div className={styles.wasteTypesBar}>
-        {wasteTypes.map((type) => (
-          <div
-            key={type.id}
-            className={`${styles.wasteTypeItem} ${selectedWasteTypeId === type.id ? styles.active : ''}`}
-            onClick={() => handleWasteTypeClick(type.id)}
-          >
-            <img src={type.iconUrl} alt={type.typeName} className={styles.wasteTypeIcon} />
-            <span>{type.typeName}</span>
-          </div>
-        ))}
-      </div>
-      <div className={styles.itemsGrid}>
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className={styles.item}
-            onClick={() => handleItemClick(item.id)}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className={styles.imageWrapper}>
-              <img src={item.image} alt={item.name} className={styles.itemImage} />
+
+        {/* Items Grid */}
+        <div className={styles.itemsGrid}>
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className={styles.itemCard}
+              onClick={() => handleItemClick(item.id)}
+            >
+              <div className={styles.itemImageWrapper}>
+                <img src={item.image} alt={item.name} className={styles.itemImage} />
+                <div className={styles.itemOverlay}>
+                  <span className={styles.viewDetails}>Xem chi tiết</span>
+                </div>
+              </div>
+              <div className={styles.itemContent}>
+                <h3 className={styles.itemTitle}>{item.name}</h3>
+                <p className={styles.itemDescription}>
+                  Tìm hiểu cách tái chế và xử lý đúng cách
+                </p>
+              </div>
             </div>
-            <p className={styles.itemLabel}>{item.name}</p>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {items.length === 0 && selectedWasteTypeId && (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>♻️</div>
+            <h3>Chưa có vật dụng nào</h3>
+            <p>Loại rác thải này chưa có vật dụng nào được thêm vào.</p>
+            {roleName === 'Staff' && (
+              <button
+                className={styles.addItemButton}
+                onClick={() => setShowAddGuide(true)}
+              >
+                Thêm vật dụng đầu tiên
+              </button>
+            )}
           </div>
-        ))}
+        )}
       </div>
+
+      {/* Modals */}
       {showAddGuide && (
         <AddRecycleGuide
           onClose={() => setShowAddGuide(false)}
           onGuideAdded={handleGuideAdded}
         />
       )}
+      
       {(showAddWasteType || showEditWasteType) && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h3>{showAddWasteType ? 'Thêm loại rác thải' : 'Chỉnh sửa loại rác thải'}</h3>
-            <form onSubmit={handleWasteTypeSubmit}>
+            <div className={styles.modalHeader}>
+              <h3>{showAddWasteType ? 'Thêm loại rác thải' : 'Chỉnh sửa loại rác thải'}</h3>
+              <button 
+                className={styles.closeButton}
+                onClick={() => {
+                  setShowAddWasteType(false);
+                  setShowEditWasteType(false);
+                  setWasteTypeForm({ id: '', typeName: '', description: '', iconUrl: '' });
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <form onSubmit={handleWasteTypeSubmit} className={styles.modalForm}>
               <div className={styles.formGroup}>
                 <label>Tên loại rác thải</label>
                 <input
@@ -222,6 +272,7 @@ const RecyclableItems: React.FC = () => {
                   value={wasteTypeForm.typeName}
                   onChange={(e) => setWasteTypeForm({ ...wasteTypeForm, typeName: e.target.value })}
                   required
+                  placeholder="Nhập tên loại rác thải..."
                 />
               </div>
               <div className={styles.formGroup}>
@@ -230,6 +281,7 @@ const RecyclableItems: React.FC = () => {
                   value={wasteTypeForm.description}
                   onChange={(e) => setWasteTypeForm({ ...wasteTypeForm, description: e.target.value })}
                   required
+                  placeholder="Nhập mô tả chi tiết..."
                 />
               </div>
               <div className={styles.formGroup}>
@@ -239,6 +291,7 @@ const RecyclableItems: React.FC = () => {
                   value={wasteTypeForm.iconUrl}
                   onChange={(e) => setWasteTypeForm({ ...wasteTypeForm, iconUrl: e.target.value })}
                   required
+                  placeholder="Nhập URL hình ảnh biểu tượng..."
                 />
               </div>
               <div className={styles.modalActions}>

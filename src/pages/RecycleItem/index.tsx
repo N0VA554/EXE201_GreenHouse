@@ -13,6 +13,7 @@ import styles from './RecycleItem.module.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+
 const EditGuideModal: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
     const { data } = useRecycleGuide();
     const [form, setForm] = useState({
@@ -86,17 +87,17 @@ const EditGuideModal: React.FC<{ open: boolean; onClose: () => void }> = ({ open
                             required
                         />
                     </div>
-                    <div className={styles.formGroup}>
-                        <label>Nội dung (Richtext)</label>
+                    <div style={{ height: '400px' }}>
                         <ReactQuill
                             theme="snow"
                             value={form.content}
-                            onChange={handleContentChange}
-                            style={{ background: 'white' }}
+                            onChange={value => setForm(f => ({ ...f, content: value }))}
+                            className={styles.quillEditor}
+                            style={{ height: '350px' }}
                         />
                     </div>
                     <div className={styles.formGroup}>
-                        <label>URL hình ảnh</label>
+                        <label>URL hình ảnh</label> 
                         <input
                             type="text"
                             name="imageUrl"
@@ -180,6 +181,18 @@ const HazardsWrapper: React.FC = () => {
     return <Hazards wasteId={data.wasteId} />;
 };
 
+const RegulationsWrapper: React.FC = () => {
+    const { wasteData, loading } = useRecycleGuide();
+    if (loading) return null;
+    if (!wasteData) return null;
+    return (
+        <div className={styles.regulationsContent}>
+            <h2>Quy định của Nhà nước về tái chế</h2>
+            <p>{wasteData.regulations}</p>
+        </div>
+    );
+};
+
 const RecycleItem: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [editOpen, setEditOpen] = useState(false);
@@ -190,11 +203,12 @@ const RecycleItem: React.FC = () => {
 
     return (
         <>
-            <EditGuideModal open={editOpen} onClose={() => setEditOpen(false)} />
+
             <div style={{ position: 'relative', paddingBottom: 70 }}>
                 <MiniCarousel />
             </div>
             <RecycleGuideProvider id={id}>
+                <EditGuideModal open={editOpen} onClose={() => setEditOpen(false)} />
                 <div style={{ paddingTop: 0 }}>
                     <AvatarOverlayWrapper />
                     <BreadcrumbWrapper />
@@ -261,10 +275,7 @@ const RecycleItem: React.FC = () => {
                             )}
                             {activeTab === 'regulations' && (
                                 <div className={styles.tabPanel}>
-                                    <div className={styles.regulationsContent}>
-                                        <h2>Quy định của Nhà nước về tái chế</h2>
-                                        <p>Nội dung quy định sẽ được cập nhật sớm...</p>
-                                    </div>
+                                    <RegulationsWrapper />
                                 </div>
                             )}
                         </div>
