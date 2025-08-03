@@ -14,28 +14,75 @@ interface LocationData {
     longitude: string;
 }
 
+interface WasteData {
+    id: string;
+    name: string;
+    description: string;
+    imageUrl: string;
+    wasteTypeId: string;
+    wasteType: {
+        id: string;
+        typeName: string;
+        description: string;
+        iconUrl: string;
+    };
+    regulations: string;
+}
+
 interface Props {
     wasteId: string;
 }
 
 const RecyclingLocation: React.FC<Props> = ({ wasteId }) => {
     const [locations, setLocations] = useState<LocationData[]>([]);
+    const [wasteData, setWasteData] = useState<WasteData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        setLoading(true);
-        axios
-            .get(`${process.env.REACT_APP_API_URL}/recyclelocations/getbywastesid/${wasteId}`)
-            .then(res => {
-                setLocations(res.data.data || []);
-            })
-            .finally(() => setLoading(false));
+        const fetchWasteAndLocations = async () => {
+            setLoading(true);
+            setError(null);
+            
+            try {
+                // First, fetch waste data to get wasteTypeId
+                const wasteResponse = await axios.get(`${process.env.REACT_APP_API_URL}/wastes/${wasteId}`);
+                const waste = wasteResponse.data.data;
+                setWasteData(waste);
+                
+                if (waste && waste.wasteTypeId) {
+                    // Then, fetch locations using wasteTypeId
+                    const locationResponse = await axios.get(`${process.env.REACT_APP_API_URL}/recyclelocations/getbywastesid/${waste.wasteTypeId}`);
+                    setLocations(locationResponse.data.data || []);
+                } else {
+                    setLocations([]);
+                }
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                setError('Không thể tải dữ liệu địa điểm tái chế');
+                setLocations([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (wasteId) {
+            fetchWasteAndLocations();
+        }
     }, [wasteId]);
 
     if (loading) return (
         <div className={styles.loadingContainer}>
             <div className={styles.loadingSpinner}></div>
             <p>Đang tải địa điểm tái chế...</p>
+        </div>
+    );
+
+    if (error) return (
+        <div className={styles.emptyContainer}>
+            <div className={styles.emptyIcon}>❌</div>
+            <h3>Lỗi tải dữ liệu</h3>
+            <p>{error}</p>
         </div>
     );
     
