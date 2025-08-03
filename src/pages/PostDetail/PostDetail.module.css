@@ -649,3 +649,60 @@
   .contentText h5 { font-size: 1.1rem; }
   .contentText h6 { font-size: 1rem; }
 }
+
+/* Staff Actions */
+.staffActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.statusButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 90px;
+}
+
+.statusButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.approveButton {
+  background: linear-gradient(45deg, #44b15b, #1b5e20);
+  color: white;
+}
+
+.approveButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(68, 177, 91, 0.3);
+}
+
+.rejectButton {
+  background: linear-gradient(45deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.rejectButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+@media (max-width: 768px) {
+  .staffActions {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .statusButton {
+    width: 100%;
+    min-width: auto;
+  }
+}

@@ -40,6 +40,8 @@ const PostDetail: React.FC = () => {
 
   const userId = localStorage.getItem('userId') || JSON.parse(localStorage.getItem('user') || '{}').id;
   const username = localStorage.getItem('username') || JSON.parse(localStorage.getItem('user') || '{}').fullName || 'Anonymous';
+  const roleName = localStorage.getItem('roleName') || JSON.parse(localStorage.getItem('user') || '{}').roleName;
+  const isStaff = roleName === 'Staff';
 
   useEffect(() => {
     fetchPost();
@@ -196,6 +198,21 @@ const PostDetail: React.FC = () => {
     setFilePreview('');
   };
 
+  const handleUpdateStatus = async (status: string) => {
+    try {
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/posts/update_status?status=${status}&id=${post?.id}`,
+        {},
+        { headers: getAuthHeader() }
+      );
+      alert(`Đã cập nhật trạng thái bài viết thành ${status === 'Approved' ? 'Đã duyệt' : 'Bị từ chối'}`);
+      fetchPost(); // Refresh the post data
+    } catch (error) {
+      console.error('Error updating post status:', error);
+      alert('Không thể cập nhật trạng thái bài viết. Vui lòng thử lại.');
+    }
+  };
+
   const isVideo = (url: string) => {
     try {
       const decoded = decodeURIComponent(url);
@@ -249,7 +266,7 @@ const PostDetail: React.FC = () => {
           <button className={styles.backButton} onClick={() => navigate('/baiviet')}>
             ← Quay lại danh sách bài viết
           </button>
-          {post.authorId === userId && (
+          {post.authorId === userId && !isStaff && (
             <div className={styles.actions}>
               <button
                 className={styles.editButton}
@@ -262,6 +279,24 @@ const PostDetail: React.FC = () => {
                 onClick={handleDelete}
               >
                 🗑️ Xóa bài viết
+              </button>
+            </div>
+          )}
+          {isStaff && (
+            <div className={styles.staffActions}>
+              <button
+                className={`${styles.statusButton} ${styles.approveButton}`}
+                onClick={() => handleUpdateStatus('Approved')}
+                disabled={post.status === 'Approved'}
+              >
+                ✅ Duyệt
+              </button>
+              <button
+                className={`${styles.statusButton} ${styles.rejectButton}`}
+                onClick={() => handleUpdateStatus('Rejected')}
+                disabled={post.status === 'Rejected'}
+              >
+                ❌ Từ chối
               </button>
             </div>
           )}
@@ -368,7 +403,7 @@ const PostDetail: React.FC = () => {
                     <span className={styles.authorName}>{post.authorName}</span>
                     <span className={styles.authorRole}>Tác giả</span>
                   </div>
-                  {post.authorId === userId && (
+                  {(post.authorId === userId || isStaff) && (
                     <div className={styles.postStatus}>
                       {post.status === 'Approved' ? '✅ Đã duyệt' : 
                        post.status === 'Pending' ? '⏳ Chờ duyệt' : 
