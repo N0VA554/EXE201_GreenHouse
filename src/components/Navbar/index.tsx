@@ -60,13 +60,11 @@ const Navbar: React.FC = () => {
             }
             var result = await axiosInstance.post(`/accounts/logout`, data, { headers: { "Content-Type": "application/json" } })
             if (result.data.code == "Success") {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                localStorage.removeItem('user');
-                localStorage.removeItem('roleName');
+                // Clear all localStorage items
+                localStorage.clear();
                 setIsLoggedIn(false);
                 setUserName('');
-                setUserAvatar('https://example.com/default-avatar.png');
+                setUserAvatar('https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg');
                 setIsDropdownOpen(false);
                 navigate('/dang-nhap');
             }

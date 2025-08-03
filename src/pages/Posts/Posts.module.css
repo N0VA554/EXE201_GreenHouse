@@ -774,4 +774,71 @@
   .emptyState h3 {
     font-size: 1.5rem;
   }
+}
+
+/* Status Actions for Staff */
+.statusActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.statusButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.statusButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.approveButton {
+  background: linear-gradient(45deg, #44b15b, #1b5e20);
+  color: white;
+}
+
+.approveButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(68, 177, 91, 0.3);
+}
+
+.rejectButton {
+  background: linear-gradient(45deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.rejectButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.pendingButton {
+  background: linear-gradient(45deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.pendingButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+}
+
+@media (max-width: 768px) {
+  .statusActions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .statusButton {
+    width: 100%;
+    min-width: auto;
+  }
 } 

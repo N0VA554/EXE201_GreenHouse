@@ -43,6 +43,8 @@ const Posts: React.FC = () => {
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId') || JSON.parse(localStorage.getItem('user') || '{}').id;
   const username = localStorage.getItem('username') || JSON.parse(localStorage.getItem('user') || '{}').fullName || 'Anonymous';
+  const roleName = localStorage.getItem('roleName') || JSON.parse(localStorage.getItem('user') || '{}').roleName;
+  const isStaff = roleName === 'Staff';
 
   useEffect(() => {
     fetchPosts();
@@ -56,7 +58,12 @@ const Posts: React.FC = () => {
       if (searchKeyword) {
         url = `${process.env.REACT_APP_API_URL}/posts/search?keyword=${encodeURIComponent(searchKeyword)}`;
       } else if (viewMode === 'my') {
-        url = `${process.env.REACT_APP_API_URL}/posts/user/${userId}?pageNumber=${currentPage}&pageSize=${pageSize}`;
+        if (isStaff) {
+          // Staff sees all posts using /posts endpoint
+          url = `${process.env.REACT_APP_API_URL}/posts?pageNumber=${currentPage}&pageSize=${pageSize}`;
+        } else {
+          url = `${process.env.REACT_APP_API_URL}/posts/user/${userId}?pageNumber=${currentPage}&pageSize=${pageSize}`;
+        }
       } else {
         url = `${process.env.REACT_APP_API_URL}/posts/status?pageNumber=${currentPage}&pageSize=${pageSize}`;
       }
@@ -182,6 +189,21 @@ const Posts: React.FC = () => {
     setSearchKeyword('');
   };
 
+  const handleUpdateStatus = async (postId: string, status: string) => {
+    try {
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/posts/update_status?status=${status}&id=${postId}`,
+        {},
+        { headers: getAuthHeader() }
+      );
+      alert(`Đã cập nhật trạng thái bài viết thành ${status === 'Approved' ? 'Đã duyệt' : status === 'Rejected' ? 'Bị từ chối' : 'Chờ duyệt'}`);
+      fetchPosts();
+    } catch (error) {
+      console.error('Error updating post status:', error);
+      alert('Không thể cập nhật trạng thái bài viết. Vui lòng thử lại.');
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -286,7 +308,7 @@ const Posts: React.FC = () => {
               className={`${styles.tabButton} ${viewMode === 'my' ? styles.active : ''}`}
               onClick={() => handleViewModeChange('my')}
             >
-              👤 Bài viết của tôi
+              {isStaff ? '👥 Bài viết của người dùng' : '👤 Bài viết của tôi'}
             </button>
           </div>
 
@@ -306,9 +328,11 @@ const Posts: React.FC = () => {
                 </button>
               </form>
             )}
-            <button className={styles.createButton} onClick={() => setShowCreateForm(true)}>
-              ✏️ Tạo bài viết mới
-            </button>
+            {!isStaff && (
+              <button className={styles.createButton} onClick={() => setShowCreateForm(true)}>
+                ✏️ Tạo bài viết mới
+              </button>
+            )}
           </div>
 
           {/* Posts List */}
@@ -323,7 +347,7 @@ const Posts: React.FC = () => {
                 <div className={styles.emptyIcon}>📝</div>
                 <h3>Chưa có bài viết nào</h3>
                 <p>{searchKeyword ? 'Không tìm thấy bài viết phù hợp.' : 'Hãy tạo bài viết đầu tiên để chia sẻ kiến thức!'}</p>
-                {!searchKeyword && (
+                {!searchKeyword && !isStaff && (
                   <button
                     className={styles.createFirstButton}
                     onClick={() => setShowCreateForm(true)}
@@ -371,7 +395,7 @@ const Posts: React.FC = () => {
                               📅 {new Date(post.createdTime).toLocaleDateString('vi-VN')}
                             </span>
                           )}
-                          {viewMode === 'my' && (
+                          {(viewMode === 'my' || isStaff) && (
                             <span className={styles.postStatus}>
                               {post.status === 'Approved' ? '✅ Đã duyệt' : 
                                post.status === 'Pending' ? '⏳ Chờ duyệt' : 
@@ -381,7 +405,7 @@ const Posts: React.FC = () => {
                           )}
                         </div>
                         <div className={styles.postActions}>
-                          {viewMode === 'my' && post.authorId === userId && (
+                          {viewMode === 'my' && post.authorId === userId && !isStaff && (
                             <>
                               <button
                                 className={styles.editButton}
@@ -396,6 +420,31 @@ const Posts: React.FC = () => {
                                 🗑️ Xóa
                               </button>
                             </>
+                          )}
+                          {isStaff && viewMode === 'my' && (
+                            <div className={styles.statusActions}>
+                              <button
+                                className={`${styles.statusButton} ${styles.approveButton}`}
+                                onClick={() => handleUpdateStatus(post.id, 'Approved')}
+                                disabled={post.status === 'Approved'}
+                              >
+                                ✅ Duyệt
+                              </button>
+                              <button
+                                className={`${styles.statusButton} ${styles.rejectButton}`}
+                                onClick={() => handleUpdateStatus(post.id, 'Rejected')}
+                                disabled={post.status === 'Rejected'}
+                              >
+                                ❌ Từ chối
+                              </button>
+                              {/* <button
+                                className={`${styles.statusButton} ${styles.pendingButton}`}
+                                onClick={() => handleUpdateStatus(post.id, 'Pending')}
+                                disabled={post.status === 'Pending'}
+                              >
+                                ⏳ Chờ duyệt
+                              </button> */}
+                            </div>
                           )}
                         </div>
                       </div>
