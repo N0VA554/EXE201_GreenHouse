@@ -54,14 +54,22 @@ export const RecycleGuideProvider: React.FC<{ id: string; children: React.ReactN
   useEffect(() => {
     if (!id) return;
     setLoading(true);
+    setError(null);
     
     // Fetch recycle guide data
     axios.get(`${process.env.REACT_APP_API_URL}/recycleguides/waste/${id}`)
       .then(res => {
-        setData(res.data.data);
-        // After getting recycle guide data, fetch waste data for regulations
-        if (res.data.data?.wasteId) {
-          return axios.get(`${process.env.REACT_APP_API_URL}/wastes/${res.data.data.wasteId}`);
+        const guideData = res.data.data;
+        setData(guideData);
+        
+        // Set waste data from the guide data if available
+        if (guideData?.waste) {
+          setWasteData(guideData.waste);
+        }
+        
+        // If waste data is not included in guide response, fetch it separately
+        if (guideData?.wasteId && !guideData?.waste) {
+          return axios.get(`${process.env.REACT_APP_API_URL}/wastes/${guideData.wasteId}`);
         }
       })
       .then(wasteRes => {
@@ -69,7 +77,10 @@ export const RecycleGuideProvider: React.FC<{ id: string; children: React.ReactN
           setWasteData(wasteRes.data.data);
         }
       })
-      .catch(() => setError('Không thể tải dữ liệu'))
+      .catch((err) => {
+        console.error('Error fetching data:', err);
+        setError('Không thể tải dữ liệu');
+      })
       .finally(() => setLoading(false));
   }, [id]);
 

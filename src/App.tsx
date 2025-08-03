@@ -19,6 +19,7 @@ import Posts from './pages/Posts';
 import PostDetail from './pages/PostDetail';
 import Events from './pages/Events';
 import MyBookings from './pages/MyBookings';
+import BookingsManagement from './pages/BookingsManagement';
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const roleName = localStorage.getItem('roleName');
@@ -36,7 +37,7 @@ const AppContent: React.FC = () => {
   return (
     <>
       <ScrollToTop />
-      <DonateCampaign />
+      {/* <DonateCampaign /> */}
       {!hideLayout && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -59,6 +60,7 @@ const AppContent: React.FC = () => {
         <Route path="/posts/:id" element={<PostDetail />} />
         <Route path="/su-kien" element={<Events />} />
         <Route path="/lich-dat" element={<MyBookings />} />
+        <Route path="/quan-ly-lich-dat" element={<BookingsManagement />} />
       </Routes>
       {!hideLayout && <Footer />}
     </>
