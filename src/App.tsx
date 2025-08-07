@@ -20,6 +20,7 @@ import PostDetail from './pages/PostDetail';
 import Events from './pages/Events';
 import MyBookings from './pages/MyBookings';
 import BookingsManagement from './pages/BookingsManagement';
+import RecyclingGame from './pages/RecyclingGame';
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const roleName = localStorage.getItem('roleName');
@@ -61,6 +62,7 @@ const AppContent: React.FC = () => {
         <Route path="/su-kien" element={<Events />} />
         <Route path="/lich-dat" element={<MyBookings />} />
         <Route path="/quan-ly-lich-dat" element={<BookingsManagement />} />
+        <Route path="/minigame" element={<RecyclingGame />} />
       </Routes>
       {!hideLayout && <Footer />}
     </>

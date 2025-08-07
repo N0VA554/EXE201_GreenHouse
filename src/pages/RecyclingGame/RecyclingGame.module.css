@@ -1,0 +1,456 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2d5016 0%, #3a5d23 25%, #4a7c59 50%, #5d8a66 75%, #6b9b73 100%);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Menu Styles */
+.menu {
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 3px solid rgba(45, 80, 22, 0.2);
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #2d5016;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.description {
+  font-size: 1.2rem;
+  color: #3a5d23;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.startButton {
+  background: linear-gradient(45deg, #4a7c59, #2d5016);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(45, 80, 22, 0.3);
+}
+
+.startButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(45, 80, 22, 0.4);
+  background: linear-gradient(45deg, #5d8a66, #3a5d23);
+}
+
+/* Game Container Styles */
+.gameContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 3px solid rgba(45, 80, 22, 0.2);
+  margin-top: 70px;
+}
+
+.gameHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, #4a7c59, #2d5016);
+  border-radius: 15px;
+  color: white;
+}
+
+.gameInfo {
+  display: flex;
+  gap: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  flex-wrap: wrap;
+}
+
+.score, .time, .progress {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+/* Trash Bins Container */
+.trashBinsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.trashBin {
+  background: linear-gradient(135deg, #6b9b73, #4a7c59);
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.trashBin:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.trashBin.dragOver {
+  border-color: #2d5016;
+  background: linear-gradient(135deg, #2d5016, #3a5d23);
+  transform: scale(1.05);
+  box-shadow: 0 20px 40px rgba(45, 80, 22, 0.4);
+}
+
+.binImage {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 15px;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.binLabel {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Trash Items Container */
+.trashItemsContainer {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  
+  max-width: 100vw;
+  overflow-x: auto;
+  padding: 10px 0;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.trashItem {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  text-align: center;
+  cursor: grab;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(45, 80, 22, 0.1);
+  position: relative;
+  animation: fadeInUp 0.5s ease-out;
+  min-width: 150px;
+  max-width: 140px;
+  flex: 0 0 120px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.trashItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border-color: rgba(45, 80, 22, 0.3);
+}
+
+.trashItem.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg) scale(1.1);
+  z-index: 1000;
+  cursor: grabbing;
+}
+
+.itemImage {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.itemName {
+  font-size: 0.9rem;
+  color: #2d5016;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Message Styles */
+.message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  z-index: 1000;
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+.message.success {
+  background: linear-gradient(45deg, #4a7c59, #2d5016);
+  color: white;
+  box-shadow: 0 10px 20px rgba(74, 124, 89, 0.3);
+}
+
+.message.error {
+  background: linear-gradient(45deg, #e74c3c, #c0392b);
+  color: white;
+  box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Game Over Styles */
+.gameOver {
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 3px solid rgba(45, 80, 22, 0.2);
+}
+
+.gameOverTitle {
+  font-size: 2.5rem;
+  color: #2d5016;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.gameOverStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat {
+  background: linear-gradient(135deg, #4a7c59, #2d5016);
+  padding: 20px;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 5px 15px rgba(74, 124, 89, 0.3);
+}
+
+.statLabel {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  opacity: 0.9;
+}
+
+.statValue {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.gameOverActions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.playAgainButton {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  background: linear-gradient(45deg, #4a7c59, #2d5016);
+  color: white;
+  box-shadow: 0 10px 20px rgba(74, 124, 89, 0.3);
+}
+
+.playAgainButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(74, 124, 89, 0.4);
+  background: linear-gradient(45deg, #5d8a66, #3a5d23);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .menu {
+    margin: 20px auto;
+    padding: 30px 20px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .gameContainer {
+    padding: 20px;
+  }
+
+  .gameHeader {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .gameInfo {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .trashBinsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .trashBin {
+    padding: 20px;
+    min-height: 150px;
+  }
+
+  .binImage {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+
+  .binLabel {
+    font-size: 1.1rem;
+  }
+
+  .trashItemsContainer {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    max-height: 300px;
+  }
+
+  .gameOverActions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .playAgainButton {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .trashBinsContainer {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .trashBin {
+    padding: 20px;
+    min-height: 140px;
+  }
+
+  .binImage {
+    width: 70px;
+    height: 70px;
+  }
+
+  .binLabel {
+    font-size: 1rem;
+  }
+
+  .trashItemsContainer {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    
+  }
+
+  .itemImage {
+    width: 50px;
+    height: 50px;
+  }
+} 
+
+@media (max-width: 900px) {
+  .trashItemsContainer {
+    gap: 10px;
+    min-height: 180px;
+  }
+  .trashItem {
+    min-width: 90px;
+    max-width: 110px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .trashItemsContainer {
+    gap: 6px;
+    min-height: 120px;
+    padding: 5px 0;
+  }
+  .trashItem {
+    min-width: 60px;
+    max-width: 80px;
+    padding: 6px;
+  }
+} 
