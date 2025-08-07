@@ -49,6 +49,7 @@ const Navbar: React.FC = () => {
         if (path === '/dang-nhap') return 'dangnhap';
         if (path === '/su-kien' || path === '/lich-dat') return 'tongquan';
         if (path === '/baiviet' || path.startsWith('/posts/')) return 'truyenthong';
+        if (path === '/minigame') return 'minigame';
         return '';
     };
 
@@ -89,6 +90,7 @@ const Navbar: React.FC = () => {
                 <li><Link to="/danhsachphanloai" className={activeSection === 'phanloai' ? styles.active : ''}>PHÂN LOẠI</Link></li>
                 <li><Link to="/su-kien" className={activeSection === 'tongquan' ? styles.active : ''}>SỰ KIỆN</Link></li>
                 <li><Link to="/baiviet" className={activeSection === 'truyenthong' ? styles.active : ''}>BÀI VIẾT</Link></li>
+                <li><Link to="/minigame" className={activeSection === 'minigame' ? styles.active : ''}>MINIGAME</Link></li>
                 <li className={styles.userMenu}>
                     {isLoggedIn ? (
                         <div className={styles.userProfile}>
