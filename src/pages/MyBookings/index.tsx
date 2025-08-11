@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import styles from './MyBookings.module.css';
 
 interface Booking {
-    id: number;
-    eventId: number;
-    eventTitle: string;
-    eventDate: string;
-    eventLocation: string;
+    id: string;
+    location: string;
     bookingDate: string;
-    status: 'confirmed' | 'pending' | 'cancelled';
-    eventImage: string;
+    description: string;
+    contactPersonName: string;
+    contactPersonPhone: string;
+    contactPersonEmail: string;
+    status: string; // PENDING, APPROVED, REJECTED...
+    userName: string;
 }
 
 const MyBookings: React.FC = () => {
@@ -21,75 +23,85 @@ const MyBookings: React.FC = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        if (!token) {
+        const userId = localStorage.getItem('userId');
+        if (!token || !userId) {
             navigate('/dang-nhap');
             return;
         }
         setIsLoggedIn(true);
-        
-        // Mock data for bookings
-        const mockBookings: Booking[] = [
-            {
-                id: 1,
-                eventId: 1,
-                eventTitle: "Hội thảo Phân loại Rác thải tại Trường Tiểu học",
-                eventDate: "15/12/2024",
-                eventLocation: "Trường Tiểu học ABC, Quận 1, TP.HCM",
-                bookingDate: "10/12/2024",
-                status: 'confirmed',
-                eventImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-            },
-            {
-                id: 2,
-                eventId: 2,
-                eventTitle: "Workshop Tái chế Sáng tạo cho Trường THCS",
-                eventDate: "20/12/2024",
-                eventLocation: "Trường THCS XYZ, Quận 3, TP.HCM",
-                bookingDate: "12/12/2024",
-                status: 'pending',
-                eventImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2066&q=80"
-            }
-        ];
-        
-        setTimeout(() => {
-            setBookings(mockBookings);
-            setLoading(false);
-        }, 1000);
+        fetchMyBookings(userId, token);
     }, [navigate]);
 
+    const fetchMyBookings = async (userId: string, token: string) => {
+        try {
+            setLoading(true);
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/bookings/user/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.status === 200) {
+                setBookings(res.data.data || []);
+            }
+        } catch (err) {
+            console.error('Error fetching bookings:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const getStatusText = (status: string) => {
-        switch (status) {
-            case 'confirmed':
-                return 'Đã xác nhận';
-            case 'pending':
-                return 'Đang chờ';
-            case 'cancelled':
+        switch (status.toUpperCase()) {
+            case 'APPROVED':
+                return 'Đã duyệt';
+            case 'PENDING':
+                return 'Chờ duyệt';
+            case 'REJECTED':
+                return 'Từ chối';
+            case 'COMPLETED':
+                return 'Hoàn thành';
+            case 'CANCELLED':
                 return 'Đã hủy';
+            case 'IN_PROGRESS':
+                return 'Đang thực hiện';
             default:
-                return 'Không xác định';
+                return status;
         }
     };
 
     const getStatusClass = (status: string) => {
-        switch (status) {
-            case 'confirmed':
+        switch (status.toUpperCase()) {
+            case 'APPROVED':
                 return styles.confirmed;
-            case 'pending':
+            case 'PENDING':
                 return styles.pending;
-            case 'cancelled':
+            case 'CANCELLED':
+            case 'REJECTED':
                 return styles.cancelled;
             default:
                 return '';
         }
     };
 
-    const handleCancelBooking = (bookingId: number) => {
+    const handleCancelBooking = async (bookingId: string) => {
         if (window.confirm('Bạn có chắc chắn muốn hủy đặt sự kiện này?')) {
-            setBookings(bookings.map(booking => 
-                booking.id === bookingId 
-                    ? { ...booking, status: 'cancelled' as const }
-                    : booking
-            ));
+            try {
+                await axios.put(
+                    `${process.env.REACT_APP_API_URL}/api/bookings/${bookingId}/cancel`,
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                        }
+                    }
+                );
+                setBookings(prev =>
+                    prev.map(b =>
+                        b.id === bookingId ? { ...b, status: 'CANCELLED' } : b
+                    )
+                );
+            } catch (error) {
+                console.error('Error cancelling booking:', error);
+                alert('Không thể hủy sự kiện. Vui lòng thử lại.');
+            }
         }
     };
 
@@ -114,7 +126,7 @@ const MyBookings: React.FC = () => {
                     <p className={styles.subtitle}>
                         Quản lý các sự kiện bạn đã đăng ký tham gia
                     </p>
-                    <button 
+                    <button
                         className={styles.backButton}
                         onClick={handleBackToEvents}
                     >
@@ -129,7 +141,7 @@ const MyBookings: React.FC = () => {
                         <div className={styles.emptyIcon}>📅</div>
                         <h2>Chưa có đặt sự kiện nào</h2>
                         <p>Bạn chưa đăng ký tham gia sự kiện nào. Hãy khám phá các sự kiện sắp tới!</p>
-                        <button 
+                        <button
                             className={styles.exploreButton}
                             onClick={handleBackToEvents}
                         >
@@ -140,45 +152,45 @@ const MyBookings: React.FC = () => {
                     <div className={styles.bookingsList}>
                         {bookings.map((booking) => (
                             <div key={booking.id} className={styles.bookingCard}>
-                                <div className={styles.bookingImage}>
-                                    <img src={booking.eventImage} alt={booking.eventTitle} />
-                                    <div className={`${styles.statusBadge} ${getStatusClass(booking.status)}`}>
-                                        {getStatusText(booking.status)}
-                                    </div>
-                                </div>
                                 <div className={styles.bookingContent}>
-                                    <h3 className={styles.eventTitle}>{booking.eventTitle}</h3>
+                                    <h3 className={styles.eventTitle}>{booking.location}</h3>
+                                    {/* <div className={`${styles.statusBadge} ${getStatusClass(booking.status)}`}>
+                                        {getStatusText(booking.status)}
+                                    </div> */}
                                     <div className={styles.bookingDetails}>
                                         <div className={styles.detailItem}>
-                                            <span className={styles.detailLabel}>📅 Ngày sự kiện:</span>
-                                            <span className={styles.detailValue}>{booking.eventDate}</span>
+                                            <span className={styles.detailLabel}>📅 Ngày đặt:</span>
+                                            <span className={styles.detailValue}>
+                                                {new Date(booking.bookingDate).toLocaleString('vi-VN')}
+                                            </span>
                                         </div>
                                         <div className={styles.detailItem}>
-                                            <span className={styles.detailLabel}>📍 Địa điểm:</span>
-                                            <span className={styles.detailValue}>{booking.eventLocation}</span>
+                                            <span className={styles.detailLabel}>📍 Người liên hệ:</span>
+                                            <span className={styles.detailValue}>{booking.contactPersonName}</span>
                                         </div>
                                         <div className={styles.detailItem}>
-                                            <span className={styles.detailLabel}>📝 Ngày đặt:</span>
-                                            <span className={styles.detailValue}>{booking.bookingDate}</span>
+                                            <span className={styles.detailLabel}>📧 Email:</span>
+                                            <span className={styles.detailValue}>{booking.contactPersonEmail}</span>
                                         </div>
                                     </div>
                                     <div className={styles.bookingActions}>
-                                        {booking.status === 'pending' && (
-                                            <button 
+                                        {booking.status.toUpperCase() === 'PENDING' && (
+                                            <button
                                                 className={styles.cancelButton}
                                                 onClick={() => handleCancelBooking(booking.id)}
                                             >
                                                 Hủy đặt
                                             </button>
                                         )}
-                                        {booking.status === 'confirmed' && (
+                                        {booking.status.toUpperCase() === 'APPROVED' && (
                                             <div className={styles.confirmedMessage}>
-                                                ✅ Sự kiện đã được xác nhận
+                                                ✅ Sự kiện đã được duyệt
                                             </div>
                                         )}
-                                        {booking.status === 'cancelled' && (
+                                        {(booking.status.toUpperCase() === 'CANCELLED' ||
+                                          booking.status.toUpperCase() === 'REJECTED') && (
                                             <div className={styles.cancelledMessage}>
-                                                ❌ Sự kiện đã bị hủy
+                                                ❌ Sự kiện đã bị hủy/từ chối
                                             </div>
                                         )}
                                     </div>
@@ -192,4 +204,4 @@ const MyBookings: React.FC = () => {
     );
 };
 
-export default MyBookings; 
+export default MyBookings;

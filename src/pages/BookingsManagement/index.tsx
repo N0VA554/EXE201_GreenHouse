@@ -46,17 +46,17 @@ const BookingsManagement: React.FC = () => {
     const checkAuthAndRole = () => {
         const token = localStorage.getItem('accessToken');
         const role = localStorage.getItem('roleName');
-        
+
         if (!token) {
             navigate('/dang-nhap');
             return;
         }
-        
+
         if (role !== 'Staff') {
             navigate('/');
             return;
         }
-        
+
         fetchBookings();
     };
 
@@ -178,7 +178,7 @@ const BookingsManagement: React.FC = () => {
         const firstDay = new Date(year, month, 1);
         const startDate = new Date(firstDay);
         startDate.setDate(startDate.getDate() - firstDay.getDay());
-        
+
         const days = [];
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -186,11 +186,11 @@ const BookingsManagement: React.FC = () => {
         for (let i = 0; i < 42; i++) {
             const date = new Date(startDate);
             date.setDate(startDate.getDate() + i);
-            
+
             const dateString = date.toISOString().split('T')[0];
             const isCurrentMonth = date.getMonth() === month;
             const isPast = date < today;
-            
+
             const dayBookings = bookings.filter(booking => {
                 const bookingDate = new Date(booking.bookingDate);
                 return bookingDate.toISOString().split('T')[0] === dateString;
@@ -222,15 +222,16 @@ const BookingsManagement: React.FC = () => {
             return newDate;
         });
     };
-
+    const [newStatus, setNewStatus] = useState<string>("");
     const handleBookingClick = (booking: BookingData) => {
         setSelectedBooking(booking);
+        setNewStatus(""); // reset khi mở popup
         setIsDetailModalOpen(true);
     };
 
     const filteredBookings = bookings.filter(booking => {
         const matchesStatus = filterStatus === 'ALL' || booking.status.toUpperCase() === filterStatus;
-        const matchesSearch = searchTerm === '' || 
+        const matchesSearch = searchTerm === '' ||
             booking.contactPersonName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             booking.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             booking.location.toLowerCase().includes(searchTerm.toLowerCase());
@@ -339,7 +340,7 @@ const BookingsManagement: React.FC = () => {
                         &gt;
                     </button>
                 </div>
-                
+
                 <div className={styles.calendarGrid}>
                     <div className={styles.calendarWeekday}>CN</div>
                     <div className={styles.calendarWeekday}>T2</div>
@@ -348,7 +349,7 @@ const BookingsManagement: React.FC = () => {
                     <div className={styles.calendarWeekday}>T5</div>
                     <div className={styles.calendarWeekday}>T6</div>
                     <div className={styles.calendarWeekday}>T7</div>
-                    
+
                     {generateCalendarDays().map((day) => (
                         <div key={day.date} className={styles.calendarDay}>
                             <div className={styles.dayNumber}>{day.day}</div>
@@ -362,7 +363,7 @@ const BookingsManagement: React.FC = () => {
                                         >
                                             <div className={styles.bookingHeader}>
                                                 <h4>{booking.contactPersonName}</h4>
-                                                <span 
+                                                <span
                                                     className={styles.statusBadge}
                                                     style={{ backgroundColor: getStatusColor(booking.status) }}
                                                 >
@@ -413,7 +414,7 @@ const BookingsManagement: React.FC = () => {
                             </div>
                             <div className={styles.bookingDetailItem}>
                                 <strong>Trạng thái:</strong>
-                                <span 
+                                <span
                                     className={styles.statusBadge}
                                     style={{ backgroundColor: getStatusColor(selectedBooking.status) }}
                                 >
@@ -422,11 +423,21 @@ const BookingsManagement: React.FC = () => {
                             </div>
                             <div className={styles.bookingDetailItem}>
                                 <strong>Cập nhật trạng thái:</strong>
-                                <select 
+                                <select
                                     className={styles.statusSelect}
-                                    onChange={(e) => updateBookingStatus(selectedBooking.id, e.target.value)}
-                                    value={selectedBooking.status}
+                                    value={newStatus}
+                                    onChange={(e) => {
+                                        const selected = e.target.value;
+                                        if (!selected) return; // nếu chọn option trống thì bỏ qua
+
+                                        if (window.confirm(`Bạn có chắc chắn muốn chuyển sang trạng thái "${getStatusText(selected)}"?`)) {
+                                            updateBookingStatus(selectedBooking.id, selected);
+                                        } else {
+                                            setNewStatus(""); // hủy thì quay lại option trống
+                                        }
+                                    }}
                                 >
+                                    <option value="">-- Chọn trạng thái mới --</option>
                                     {getAvailableStatuses(selectedBooking.status).map(status => (
                                         <option key={status} value={status}>
                                             {getStatusText(status)}
@@ -434,6 +445,8 @@ const BookingsManagement: React.FC = () => {
                                     ))}
                                 </select>
                             </div>
+
+
                         </div>
                     </div>
                 </div>

@@ -541,7 +541,7 @@ const Events: React.FC = () => {
                             <div className={styles.eventContent}>
                                 <h3 className={styles.eventTitle}>{event.title}</h3>
                                 <p className={styles.eventDescription}>{event.description}</p>
-                                <div className={styles.eventStats}>
+                                {/* <div className={styles.eventStats}>
                                     <span className={styles.capacity}>
                                         Sức chứa: {event.registeredCount}/{event.capacity}
                                     </span>
@@ -551,7 +551,7 @@ const Events: React.FC = () => {
                                             style={{ width: `${(event.registeredCount / event.capacity) * 100}%` }}
                                         ></div>
                                     </div>
-                                </div>
+                                </div> */}
                                 <button 
                                     className={`${styles.bookButton} ${event.registeredCount >= event.capacity ? styles.disabled : ''}`}
                                     onClick={() => handleBookEvent(event)}

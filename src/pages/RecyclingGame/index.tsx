@@ -116,7 +116,7 @@ const RecyclingGame: React.FC = () => {
   const [messageType, setMessageType] = useState<'success' | 'error'>('success');
   const [isDragging, setIsDragging] = useState(false);
   const [nextItemIndex, setNextItemIndex] = useState(0);
-
+  const [availableTrash, setAvailableTrash] = useState<TrashItem[]>([]);
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const addItemRef = useRef<NodeJS.Timeout | null>(null);
@@ -158,8 +158,7 @@ const RecyclingGame: React.FC = () => {
     { id: '4', name: 'Khẩu trang y tế', image: khauTrangYTe, category: 'rac_vo_co' },
     { id: '5', name: 'Đĩa CD', image: diaCd, category: 'rac_vo_co' },
     { id: '6', name: 'Đĩa DVD', image: diaDvd, category: 'rac_vo_co' },
-    { id: '7', name: 'Bóng đèn dài', image: bongDenDai, category: 'rac_vo_co' },
-    { id: '8', name: 'Bóng đèn tròn', image: bongDenTron, category: 'rac_vo_co' },
+    
     { id: '9', name: 'Ống hút nhựa', image: ongHutNhua, category: 'rac_vo_co' },
     { id: '10', name: 'Dây thun', image: dayThun, category: 'rac_vo_co' },
     { id: '11', name: 'Vỏ mì', image: voMi, category: 'rac_vo_co' },
@@ -237,29 +236,36 @@ const RecyclingGame: React.FC = () => {
   // Thêm rác mới liên tục (chỉ khi số lượng rác trên hàng < 6)
   const addNewTrashItem = React.useCallback(() => {
     if (gameState !== 'playing') return;
-    setCurrentItems(prev => {
-      if (prev.length >= 6) return prev;
-      const newItem = allTrashItems[nextItemIndex % allTrashItems.length];
-      const itemWithNewId = {
-        ...newItem,
-        id: `${newItem.id}_${Date.now()}_${Math.random()}`
-      };
-      setNextItemIndex(prevIdx => prevIdx + 1);
-      return [...prev, itemWithNewId];
+  
+    setCurrentItems(prevItems => {
+      if (prevItems.length >= 6 || availableTrash.length === 0) return prevItems;
+  
+      const [newItem, ...restQueue] = availableTrash;
+  
+      // Cập nhật hàng chờ còn lại
+      setAvailableTrash(restQueue);
+  
+      // Trả về mảng mới với item mới
+      return [
+        ...prevItems,
+        { ...newItem, id: `${newItem.id}_${Date.now()}_${Math.random()}` }
+      ];
     });
-  }, [gameState, nextItemIndex, allTrashItems]);
+  }, [gameState, availableTrash]);
+  
 
   // Bắt đầu game
   const startGame = () => {
     // Bắt đầu với 10 rác random
-    const shuffled = [...allTrashItems].sort(() => 0.5 - Math.random());
+    const shuffled = [...allTrashItems].sort(() => Math.random() - 0.5);
     const initialItems = shuffled.slice(0, 6).map((item, index) => ({
       ...item,
       id: `${item.id}_${Date.now()}_${index}`
     }));
-    
+
+    setAvailableTrash(shuffled.slice(6)); // phần còn lại là hàng chờ
     setCurrentItems(initialItems);
-    setNextItemIndex(10);
+
     setTotalProcessed(0);
     setCorrectItems(0);
     setScore(0);
@@ -321,7 +327,7 @@ const RecyclingGame: React.FC = () => {
 
   const handleDrop = (e: React.DragEvent, targetBin: TrashBin) => {
     e.preventDefault();
-    
+
     if (!draggedItem) return;
 
     setTotalProcessed(prev => prev + 1);
@@ -333,7 +339,7 @@ const RecyclingGame: React.FC = () => {
       setCurrentItems(prev => prev.filter(item => item.id !== draggedItem.id));
       setMessage('Chính xác! +10 điểm');
       setMessageType('success');
-      
+
       // Thêm rác mới ngay lập tức khi phân loại đúng
       setTimeout(() => {
         addNewTrashItem();
@@ -381,7 +387,7 @@ const RecyclingGame: React.FC = () => {
         <div className={styles.menu}>
           <h1 className={styles.title}>🎮 Minigame Phân Loại Rác</h1>
           <p className={styles.description}>
-            Kéo thả rác vào đúng thùng rác tương ứng để ghi điểm!<br/>
+            Kéo thả rác vào đúng thùng rác tương ứng để ghi điểm!<br />
             Rác sẽ xuất hiện liên tục, hãy phân loại nhanh chóng!
           </p>
           <button className={styles.startButton} onClick={startGame}>
